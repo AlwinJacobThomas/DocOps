@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}Signup{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'user/style.css' %}">
+<script src="{% static 'user/script.js' %}"></script>
+<script src="https://kit.fontawesome.com/45978a437e.js" crossorigin="anonymous"></script>
+
+{% endblock %}
+{% block content %}
+<section class="container forms">
+    <div class="form login">
+        <div class="form-content">
+            <div class="header">Patient Signup</div>
+            <form action="" method="post">{% csrf_token %}
+                {% if error == True %}
+                <span style="color: red">{{form.errors}}</span>
+                {% endif %}
+                <div class="field input-field">
+
+                    {{form.email}}
+
+                </div>
+
+                <div class="field input-field">
+
+                    {{form.password1}}
+
+                </div>
+
+                <div class="field input-field">
+                    {{form.password2}}
+                    <i class='bx bx-hide eye-icon'></i>
+                </div>
+                  
+                <div class="field button-field">
+                    <input type="submit" value="Signup" class="btn">
+                </div>
+            </form>
+
+            <div class="form-link">
+                <span>Already have an account? <a href="{% url 'user:login' %}" class="link login-link">Login</a></span>
+            </div>
+        </div>
+
+
+
+    </div>
+</section>
+
+{% endblock %}

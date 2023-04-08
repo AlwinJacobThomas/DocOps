@@ -5,8 +5,9 @@ app_name = 'user'
 
 urlpatterns =[
     path('hoslogin/',views.HosLogin,name='hoslogin'),
-    path('logout/',views.HosLogout,name='hoslogout'),
+    path('hoslogout/',views.HosLogout,name='hoslogout'),
     path('hossignup/',views.HosSignup,name='hossignup'),
+
     path('signup/',views.Signup,name='signup'),
     path('login/',views.Login,name='login'),
     path('logout/',views.Logout,name='logout'),

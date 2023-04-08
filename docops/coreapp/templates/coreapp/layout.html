@@ -9,7 +9,6 @@
 				initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     {% block head %}{% endblock %}
-    
 </head>
 
 <body>
@@ -17,29 +16,30 @@
     <header>
 
         <div class="logosec">
-            <a class="logo" href="{% url 'hospital:hospital' %}">DocOps Hospital</a>
+            <a class="logo" href="{% url 'coreapp:home' %}">DocOps</a>
         </div>
         {% if user.is_authenticated %}
         <div class="message">
             <div class="user">{{user.email}}</div>
-            <a href="profile.html">
+            <a href="{% url 'coreapp:profile' %}">
                 <div class="dp">
                     <img src="{% static 'img/linto.png' %}"
                         class="dpicn" alt="dp">
                 </div>
             </a>
-            <a href="{% url 'user:hoslogout' %}" class=".btn">Logout</a>
+            <a href="{% url 'user:logout' %}" class=".btn">Logout</a>
         </div>
         
         {% else %}
         <div class="message">
-            <a class="btn" href="{% url 'user:hoslogin'%}">Login</a>
-            <a class="btn" href="{% url 'user:hossignup'%}">Signup</a>
+            <a class="btn" href="{% url 'user:login'%}">Login</a>
+            <a class="btn" href="{% url 'user:signup'%}">Signup</a>
         </div>
         {% endif %}
     </header>
 
     {% block content %}
+
     {% endblock %}
 </body>
 

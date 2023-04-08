@@ -1,0 +1,52 @@
+{% extends 'user/hospital/layout.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'user/style.css' %}">
+<script type="js" src="{% static 'user/script.js' %}"></script>
+<link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+ 
+{% endblock %}
+{% block content %}
+<section class="container forms">
+    <div class="form login">
+        <div class="form-content">
+            <div class="header">Hospital Login </div>
+            <form action="#" method="post">
+                {% csrf_token %}
+                {% if message %}
+                <span style="color: red">
+                    {{message}}
+                </span>
+                {% endif %}
+
+                <div class="field input-field">
+                    {{form.username}}
+                </div>
+
+                <div class="field input-field">
+                    {{form.password}}
+                    <i class='bx bx-hide eye-icon'></i>
+                </div>
+
+                <div class="form-link">
+                    <a href="#" class="forgot-pass">Forgot password?</a>
+                </div>
+
+                <div class="field button-field">
+                    <input type="submit" class="btn" value="Login">
+                </div>
+            </form>
+
+            <div class="form-link">
+                <span>Don't have an account? <a href="{% url 'user:hossignup' %}" class="link signup-link">Signup</a></span>
+            </div>
+        </div>
+
+        
+    </div>
+
+
+</section>
+{% endblock %}

@@ -13,12 +13,12 @@ def HosSignup(request):
             form.save()
             return redirect(reverse('user:hoslogin'))
         else:
-            return render(request, 'hospital/hos_signup.html', {
+            return render(request, 'user/hospital/hos_signup.html', {
                 'form': form,
                 'error': True,
             })
     
-    return render(request,'hospital/hos_signup.html',{
+    return render(request,'user/hospital/hos_signup.html',{
         'form': form,
         'error': False
     })
@@ -41,11 +41,11 @@ def HosLogin(request):
                 'message':'invalid credential',
                 'form':form
             }
-            return render(request,'hospital/hos_login.html',context)
+            return render(request,'user/hospital/hos_login.html',context)
      
     else:
         form = HosLoginForm()
-        return render(request, 'hospital/hos_login.html', {'form':form})
+        return render(request, 'user/hospital/hos_login.html', {'form':form})
 def HosLogout(request):
     logout(request)
     return redirect('hospital:hospital')  
@@ -56,14 +56,14 @@ def Signup(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('coreapp:home'))
+            return redirect(reverse('user:login'))
         else:
-            return render(request, 'patient/signup.html', {
+            return render(request, 'user/patient/signup.html', {
                 'form': form,
                 'error': True,
             })
     
-    return render(request,'patient/signup.html',{
+    return render(request,'user/patient/signup.html',{
         'form': form,
         'error': False
     })
@@ -83,11 +83,11 @@ def Login(request):
         else:
             print("login error")
             form = LoginForm()
-            return render(request,'patient/login.html',{'form':form})
+            return render(request,'user/patient/login.html',{'form':form})
      
     else:
         form = LoginForm()
-        return render(request, 'patient/login.html', {'form':form})
+        return render(request, 'user/patient/login.html', {'form':form})
 
 def Logout(request):
     logout(request)

@@ -25,7 +25,7 @@ def HosSignup(request):
 
 def HosLogin(request):
     if request.user.is_authenticated:
-        return redirect(reverse('coreapp:hospital'))
+        return redirect(reverse('hospital:hospital'))
 
     if request.method == 'POST':
         username = request.POST['username']
@@ -34,7 +34,7 @@ def HosLogin(request):
  
         if user is not None:
             login(request,user)
-            return redirect(reverse('coreapp:hospital'))
+            return redirect(reverse('hospital:hospital'))
         else:
             form = HosLoginForm()
             context = {
@@ -48,7 +48,7 @@ def HosLogin(request):
         return render(request, 'hospital/hos_login.html', {'form':form})
 def HosLogout(request):
     logout(request)
-    return redirect('coreapp:hospital')  
+    return redirect('hospital:hospital')  
 
 def Signup(request):
     form = SignupForm()

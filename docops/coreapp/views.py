@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,reverse
-from user.models import HospitalProfile, PatientProfile
+
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
@@ -12,7 +12,7 @@ def home(request):
             "user" : request.user,
         }
         if request.user.role=='HOSPITAL':
-            return redirect('coreapp:hospital')
+            return redirect(reverse('hospital:hospital'))
         else :
             return render(request, 'patient/u-dash.html',context)
         
@@ -47,18 +47,3 @@ def hos_search(request):
 
 
 
-def hospital(request):
-    context = {"profile":None}
-    if request.user.is_authenticated:
-        
-        context = {
-            "user" : request.user,
-        }
-        if request.user.role=='HOSPITAL':
-            return render(request, 'hospital/hospital.html', context)
-        elif request.user.role=='PATIENT':
-            return redirect(reverse('coreapp:home'))
-        else:
-            return redirect('admin')
-    else:    
-        return render(request, 'hospital/Landing.html')

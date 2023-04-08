@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'coreapp',
     'user',
+    'hospital',
     'django_cleanup',
 ]
 
@@ -51,6 +52,7 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'user/templates/'),
             os.path.join(BASE_DIR, 'coreapp/templates/'),
+            os.path.join(BASE_DIR, 'hospital/templates/'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

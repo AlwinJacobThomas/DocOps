@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends 'hospital/layout.html' %}
 {% load static %}
 
 {% block title %}Signup{% endblock %}
@@ -12,7 +12,7 @@
 <section class="container forms">
     <div class="form login">
         <div class="form-content">
-            <header>Hospital Signup</header>
+            <div class="header">Hospital Signup </div>
             <form action="" method="post">{% csrf_token %}
                 {% if error == True %}
                 <span style="color: red">{{form.errors}}</span>

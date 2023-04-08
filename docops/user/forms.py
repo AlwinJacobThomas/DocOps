@@ -118,7 +118,11 @@ class HosSignupForm(UserCreationForm):
     )
     password2 = forms.CharField(
         label='Confirm Password',
-        
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'password2',
+                'placeholder': 'Confirm password'
+            })
 
     )
 

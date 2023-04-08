@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends 'hospital/layout.html' %}
 {% load static %}
 
 {% block title %}Login{% endblock %}
@@ -12,7 +12,7 @@
 <section class="container forms">
     <div class="form login">
         <div class="form-content">
-            <header>Hospital Login</header>
+            <div class="header">Hospital Login </div>
             <form action="#" method="post">
                 {% csrf_token %}
                 {% if message %}

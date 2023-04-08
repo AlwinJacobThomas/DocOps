@@ -1,0 +1,20 @@
+{% extends 'hospital/layout.html' %}
+{% load static %}
+
+{% block title %}Hospital{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+{{user.email}}
+<!--     
+    <img src="{{profile.pic.url}}" alt="dp" class="rounded-full h-12 w-12"> -->
+    <a href="{% url 'user:hoslogout' %}">Logout</a>
+{% else %}
+    <a href="{% url 'user:hoslogin' %}">Login</a>
+
+{% endif %}
+
+    <h1>Hospital</h1> 
+    <a href="{% url 'hospital:hospital' %}" >hospital</a>
+    <h1>This is the landing page of doc</h1>
+   
+{% endblock %}

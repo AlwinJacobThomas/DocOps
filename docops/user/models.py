@@ -132,7 +132,7 @@ class PatientProfile(models.Model):
      pic = models.ImageField('Patient_Profile_Pic', upload_to=path_and_rename,blank = True)
 
      def __str__(self):
-          return self.user.username
+          return self.user.email
 #---------------Hospital---------------------------------------- 
 class HospitalManager(models.Manager):
      def get_queryset(self,*args,**kwargs):
@@ -164,4 +164,4 @@ class HospitalProfile(models.Model):
      pic = models.ImageField('Hospital_Profile_Pic', upload_to=path_and_rename,blank = True)
 
      def __str__(self):
-          return self.hospital_name
+          return self.user.email

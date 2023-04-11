@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}Profile{% endblock %}
-{% block head %}<link rel="stylesheet" href="{% static 'css/style.css' %}">{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'coreapp/css/style.css' %}">{% endblock %}
 {% block content %}
 
 <div class="main-container">
@@ -67,7 +67,7 @@
     <div class="main">
         <main>
             <div class="profile-picture">
-                <img src="{% static 'img/linto.png' %}" alt="Profile picture">
+                <img src="{% static 'coreapp/img/linto.png' %}" alt="Profile picture">
             </div>
             <div class="profile-info">
                 <a href="{% url 'coreapp:edit_profile' %}" class="btn">Edit Profile</a>

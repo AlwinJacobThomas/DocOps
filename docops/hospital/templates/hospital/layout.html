@@ -22,10 +22,13 @@
         {% if user.is_authenticated %}
         <div class="message">
             <div class="user">{{user.email}}</div>
-            <a href="profile.html">
+            <a href="{% url 'hospital:edit_profile' %}">
                 <div class="dp">
-                    <img src="{% static 'img/linto.png' %}"
-                        class="dpicn" alt="dp">
+                    {% if user.hospital.pic %}
+                    <img src="{{ user.hospital.pic.url }}" class="dpicn" alt="dp">
+                    {% else %}
+                    <img src="{% static 'hospital/img/default.png' %}" alt="">
+                    {% endif %}
                 </div>
             </a>
             <a href="{% url 'user:hoslogout' %}" class=".btn">Logout</a>

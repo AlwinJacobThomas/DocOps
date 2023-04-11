@@ -114,16 +114,16 @@ class Patient(User):
 
     patient = PatientManager()
 #Automatic creation of UserProfile during UserCreation
-@receiver(post_save,sender=Patient)
-def create_user_profile(sender,instance,created,**kwargs):
-     if created and instance.role == "PATIENT":
-          PatientProfile.objects.create(user=instance)
+# @receiver(post_save,sender=Patient)
+# def create_user_profile(sender,instance,created,**kwargs):
+#      if created and instance.role == "PATIENT":
+#           PatientProfile.objects.create(user=instance)
 
 #userprofile to created user
 path_and_rename = PathAndRename("patient/")
 class PatientProfile(models.Model):
      user = models.OneToOneField(User,on_delete=models.CASCADE)
-     patient_id = models.IntegerField(null=True,blank=True)
+     patient_id = models.IntegerField(primary_key=True, editable=False)
      first_name = models.CharField(max_length=150, blank=True)
      last_name = models.CharField(max_length=150, blank=True)
      address = models.CharField(max_length=50,null=True,blank=True)
@@ -149,16 +149,16 @@ class Hospital(User):
          
 
 #Automatic creation of UserProfile during UserCreation
-@receiver(post_save,sender=Hospital)
-def create_user_profile(sender,instance,created,**kwargs):
-     if created and instance.role == "HOSPITAL":
-          HospitalProfile.objects.create(user=instance)
+# @receiver(post_save,sender=Hospital)
+# def create_user_profile(sender,instance,created,**kwargs):
+#      if created and instance.role == "HOSPITAL":
+#           HospitalProfile.objects.create(user=instance)
 
 #userprofile to created user
 path_and_rename = PathAndRename("hospital/")
 class HospitalProfile(models.Model):
-     user = models.OneToOneField(User,on_delete=models.CASCADE)
-     hospital_id = models.IntegerField(null=True,blank=True)
+     user = models.OneToOneField(User,on_delete=models.CASCADE, related_name='hospital')
+     hospital_id = models.IntegerField(primary_key=True, editable=False)
      hospital_name = models.CharField(max_length=150, blank=True)
      address = models.CharField(max_length=150, blank=True)
      pic = models.ImageField('Hospital_Profile_Pic', upload_to=path_and_rename,blank = True)

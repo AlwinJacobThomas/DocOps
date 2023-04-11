@@ -1,7 +1,8 @@
 from django import forms
+from .models import Patient,Hospital,PatientProfile
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth import get_user_model
-from .models import Patient,Hospital,PatientProfile
+
 
 
 class SignupForm(UserCreationForm):
@@ -78,18 +79,18 @@ class ProfileForm(forms.ModelForm):
     )
     address = forms.CharField(
         label='Address',
-        widget=forms.PasswordInput(
+        widget=forms.TextInput(
             attrs={
                 'class': 'textarea',
                 'placeholder': 'Address'
             })        
 
     )
-    pic = forms.CharField(
+    pic = forms.ImageField(
         label='Profile Picture',
-        widget=forms.PasswordInput(
+        widget=forms.TextInput(
             attrs={
-                'class': 'upload',
+                'class': 'pic_upload',
                 
             })        
 

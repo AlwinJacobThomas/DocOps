@@ -11,7 +11,13 @@ def HosSignup(request):
         form = HosSignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('user:hoslogin'))
+            username = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                print('success')
+                login(request, user)
+                return redirect(reverse('hospital:add_profile'))
         else:
             return render(request, 'user/hospital/hos_signup.html', {
                 'form': form,

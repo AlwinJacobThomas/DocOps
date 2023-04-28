@@ -90,8 +90,7 @@ class ProfileForm(forms.ModelForm):
         label='Profile Picture',
         widget=forms.TextInput(
             attrs={
-                'class': 'pic_upload',
-                
+                'class': 'pic_upload'
             })        
 
     )      

@@ -5,7 +5,6 @@
 {% block head %}
 <link rel="stylesheet" href="{% static 'hospital/css/style.css' %}">
 <link rel="stylesheet" href="{% static 'hospital/css/edit_profile.css' %}">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 {% endblock %}
 {% block content %}
 <div class="main">
@@ -15,19 +14,9 @@
         {% if error == True %}
         <span style="color: red">{{form.errors}}</span>
         {% endif %}
-        <div class="avatar-upload">
-            <div class="avatar-edit">
-                {{form.pic}}
-                <label for="imageUpload">&#9998;</label>
-            </div>
-            <div class="avatar-preview">
-                {% if not user.hospital.pic %}
-                <div id="imagePreview" style="background-image: url({% static 'hospital/img/default.png' %});"></div>
-                {% else %}
-                <div id="imagePreview" style="background-image: url({{user.hospital.pic.url}});"></div>
-                {% endif %}
-            </div>
-        </div>
+
+        <input type="file" name="pic" id="pic">
+
         <p>
             <label for="hospital_name">Hospital Name:</label>
         </p>
@@ -38,5 +27,4 @@
 
     </form>
 </div>
-<script src="{% static 'hospital/scripts/edit_profile.js' %}"></script>
 {% endblock %}

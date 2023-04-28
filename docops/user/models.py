@@ -161,7 +161,7 @@ class HospitalProfile(models.Model):
      hospital_id = models.IntegerField(primary_key=True, editable=False)
      hospital_name = models.CharField(max_length=150, blank=True)
      address = models.CharField(max_length=150, blank=True)
-     pic = models.ImageField('Hospital_Profile_Pic', upload_to=path_and_rename,blank = True)
+     pic = models.ImageField('Hospital_Profile_Pic', upload_to=path_and_rename,blank = True, null=True)
 
      def __str__(self):
           return self.user.email

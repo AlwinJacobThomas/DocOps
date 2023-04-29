@@ -34,6 +34,8 @@ def AddProfile(request):
                 if form.is_valid():
                     post=form.save(commit=False)
                     post.user = User.objects.get(id=request.user.id)
+                    if 'pic' in request.FILES:
+                        post.pic = request.FILES['pic']
                     post.save()
                     return redirect(reverse('hospital:hospital'))
                 else:

@@ -1,8 +1,10 @@
 from django.shortcuts import render,redirect,reverse
-
+from .forms import AddPatientProfileForm
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 # Create your views here.
-
+User = get_user_model()
 
 def home(request):
     context = {"profile":None}
@@ -18,7 +20,35 @@ def home(request):
         
     else:   
         return render(request, 'coreapp/landing.html')
-    
+
+@login_required
+def AddProfile(request):
+    if request.user.is_authenticated and request.user.role == 'PATIENT':
+        try:
+            instance = request.user.patient
+            # print("hiiii "+request.user.patient)
+            return redirect('coreapp:edit_profile')
+        except ObjectDoesNotExist:
+            form = AddPatientProfileForm()
+            if request.method == "POST":
+                form = AddPatientProfileForm(request.POST, request.FILES)
+                if form.is_valid():
+                    post=form.save(commit=False)
+                    post.user = User.objects.get(id=request.user.id)
+                    post.save()
+                    return redirect(reverse('coreapp:home'))
+                else:
+                    return render(request, 'coreapp/add-profile.html', {
+                        'form': form,
+                        'error': True,
+                    })
+            return render(request,'coreapp/add-profile.html',{
+                'form': form,
+                'error': False
+            })
+    else:
+        return redirect('coreapp:home')
+
 @login_required
 def c_dash(request):
     return render(request, 'coreapp/c-dash.html')

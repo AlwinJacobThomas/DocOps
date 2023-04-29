@@ -62,7 +62,13 @@ def Signup(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('user:login'))
+            username = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                print('success')
+                login(request, user)
+                return redirect(reverse('coreapp:add_profile'))
         else:
             return render(request, 'user/patient/signup.html', {
                 'form': form,

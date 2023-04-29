@@ -11,5 +11,6 @@ urlpatterns =[
     path('hos_search',views.hos_search,name='hos_search'),
     path('profile',views.profile,name='profile'),
     path('edit_profile',views.edit_profile,name='edit_profile'),
+    path('add_profile',views.AddProfile,name='add_profile'),
     path('appointment',views.appointment,name='appointment'),
 ]

@@ -122,7 +122,7 @@ class Patient(User):
 #userprofile to created user
 path_and_rename = PathAndRename("patient/")
 class PatientProfile(models.Model):
-     user = models.OneToOneField(User,on_delete=models.CASCADE)
+     user = models.OneToOneField(User,on_delete=models.CASCADE, related_name='patient')
      patient_id = models.IntegerField(primary_key=True, editable=False)
      first_name = models.CharField(max_length=150, blank=True)
      last_name = models.CharField(max_length=150, blank=True)

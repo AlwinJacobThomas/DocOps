@@ -129,7 +129,7 @@ class PatientProfile(models.Model):
      address = models.CharField(max_length=50,null=True,blank=True)
 
 
-     pic = models.ImageField('Patient_Profile_Pic', upload_to=path_and_rename,blank = True)
+     pic = models.ImageField('Patient_Profile_Pic', upload_to=path_and_rename,blank = True,null=True)
 
      def __str__(self):
           return self.user.email

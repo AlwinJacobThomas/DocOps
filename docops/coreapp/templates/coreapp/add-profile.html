@@ -3,9 +3,8 @@
 
 {% block title %}Add Profile{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="{% static 'hospital/css/style.css' %}">
-<link rel="stylesheet" href="{% static 'hospital/css/edit_profile.css' %}">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<link rel="stylesheet" href="{% static 'coreapp/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'coreapp/css/edit_profile.css' %}">
 {% endblock %}
 {% block content %}
 <div class="main">
@@ -15,40 +14,21 @@
         {% if error == True %}
         <span style="color: red">{{form.errors}}</span>
         {% endif %}
-        <div class="avatar-upload">
-            <div class="avatar-edit">
-                {{form.pic}}
-                <label for="imageUpload">&#9998;</label>
-            </div>
-            <div class="avatar-preview">
-                {% if not user.patient.pic %}
-                <div id="imagePreview" style="background-image: url({% static 'hospital/img/default.png' %});"></div>
-                {% else %}
-                <div id="imagePreview" style="background-image: url({{user.hospital.pic.url}});"></div>
-                {% endif %}
-            </div>
-        </div>
-        
+
+        <input type="file" name="pic" id="pic">
+
         <p>
             <label for="first_name">First Name:</label>
         </p>
         <p>{{form.first_name}}</p>
-        
         <p>
             <label for="last_name">Last Name:</label>
         </p>
         <p>{{form.last_name}}</p>
-        
-        <p>
-            <label for="address">Address:</label>
-        </p>
+        <p><label for="">Address:</label></p>
         <p>{{form.address}}</p>
-        
-        <p>
-            <input type="submit" value="Submit" class="btn">
-        </p>
+        <p><input type="submit" value="Submit" class="btn"></p>
 
     </form>
 </div>
-<script src="{% static 'hospital/scripts/edit_profile.js' %}"></script>
 {% endblock %}

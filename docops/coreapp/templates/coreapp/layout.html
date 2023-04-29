@@ -23,8 +23,11 @@
             <div class="user">{{user.email}}</div>
             <a href="{% url 'coreapp:profile' %}">
                 <div class="dp">
-                    <img src="{% static 'coreapp/img/linto.png' %}"
-                        class="dpicn" alt="dp">
+                    {% if user.patient.pic %}
+                    <img src="{{ user.patient.pic.url }}" class="dpicn" alt="dp">
+                    {% else %}
+                    <img src="{% static 'coreapp/img/default.png' %}" height="100%" alt="">
+                    {% endif %}
                 </div>
             </a>
             <a href="{% url 'user:logout' %}" class=".btn">Logout</a>

@@ -3,6 +3,7 @@ from .forms import AddHospitalProfileForm
 from user.models import HospitalProfile
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
 
 User = get_user_model()
 
@@ -22,8 +23,9 @@ def hospital(request):
     else:    
         return render(request, 'hospital/landing.html')
     
+@login_required
 def AddProfile(request):
-    if request.user.is_authenticated and request.user.role == 'HOSPITAL':
+    if request.user.role == 'HOSPITAL':
         try:
             instance = request.user.hospital
             return redirect('hospital:edit_profile')

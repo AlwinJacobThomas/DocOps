@@ -27,14 +27,14 @@ class AddPatientProfileForm(forms.ModelForm):
                 'placeholder': 'Address'
             })
     )
-    pic = forms.ImageField(
-        label='Profile Pic',
-        widget=forms.FileInput(
-            attrs={
-                'id': 'imageUpload',
-                'accept': '.png, .jpg, .jpeg'
-            })
-    )
+    # pic = forms.ImageField(
+    #     label='Profile Pic',
+    #     widget=forms.FileInput(
+    #         attrs={
+    #             'id': 'imageUpload',
+    #             'accept': '.png, .jpg, .jpeg'
+    #         })
+    # )
 
     class Meta:
         model = PatientProfile

@@ -27,7 +27,7 @@ def AddProfile(request):
         try:
             instance = request.user.patient
             # print("hiiii "+request.user.patient)
-            return redirect('coreapp:edit_profile')
+            return redirect('coreapp:home')
         except ObjectDoesNotExist:
             form = AddPatientProfileForm()
             if request.method == "POST":
@@ -35,7 +35,10 @@ def AddProfile(request):
                 if form.is_valid():
                     post=form.save(commit=False)
                     post.user = User.objects.get(id=request.user.id)
-                    post.save()
+                    if 'pic' in request.FILES:
+                        post.pic = request.FILES['pic']
+                    post.save() 
+                    
                     return redirect(reverse('coreapp:home'))
                 else:
                     return render(request, 'coreapp/add-profile.html', {
@@ -48,7 +51,29 @@ def AddProfile(request):
             })
     else:
         return redirect('coreapp:home')
-
+def EditProfile(request):
+    if request.user.is_authenticated and request.user.role == 'PATIENT':
+        try:
+            instance = request.user.patient
+            form = AddPatientProfileForm(instance=instance)
+            if request.method == "POST":
+                form = AddPatientProfileForm(request.POST, request.FILES, instance=instance)
+                if form.is_valid():
+                    form.save()
+                    return redirect(reverse('coreapp:home'))
+                else:
+                    return render(request, 'coreapp/add-profile.html', {
+                        'form': form,
+                        'error': True,
+                    })
+            
+            return render(request,'coreapp/add-profile.html',{
+                'form': form,
+                'error': False,
+            })
+        except ObjectDoesNotExist:   
+            return redirect('coreapp:home')   
+        
 @login_required
 def c_dash(request):
     return render(request, 'coreapp/c-dash.html')

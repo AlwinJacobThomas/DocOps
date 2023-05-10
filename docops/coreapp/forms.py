@@ -38,4 +38,4 @@ class AddPatientProfileForm(forms.ModelForm):
 
     class Meta:
         model = PatientProfile
-        fields = ['first_name','last_name', 'address', 'pic', ]
+        fields = ['first_name','last_name', 'address', 'pic', 'gender', 'phone', 'dob']

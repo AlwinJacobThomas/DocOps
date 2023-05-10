@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'user',
     'hospital',
     'django_cleanup',
+    'location_field.apps.DefaultConfig',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,4 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "user.User"
+

@@ -85,7 +85,7 @@
 
         <div class="box-container">
 
-            <div class="wide-card">
+            <!-- <div class="wide-card">
                 <img src="{% static 'img/hospital.jpg' %}" alt="John" style="height: 150px; border-radius: 10px 0 0 10px ;">
                 <div class="wide-card-details">
 
@@ -102,12 +102,13 @@
 
                     <a href="hos-profile.html" class="btn">View</a>
                 </div>
-            </div>
+            </div> -->
+            {% for hos in hospitals %}
             <div class="wide-card">
                 <img src="{% static 'img/hospital.jpg' %}" alt="John" style="height: 150px;border-radius: 10px 0 0 10px ;">
                 <div class="wide-card-details">
 
-                    <h2 class="card-name">Carithas Hospital</h2>
+                    <h2 class="card-name">{{hos.hospital_name}}</h2>
                     <div class="title">Private</div>
                     <div>Ettumanoor,kottayam</div>
                     <div class="star">
@@ -121,24 +122,8 @@
                     <a href="hos-profile.html" class="btn">View</a>
                 </div>
             </div>
-            <div class="wide-card">
-                <img src="{% static 'img/hospital.jpg' %}" alt="John" style="height: 150px;border-radius: 10px 0 0 10px ;">
-                <div class="wide-card-details">
-
-                    <h2 class="card-name">Carithas Hospital</h2>
-                    <div class="title">Private</div>
-                    <div>Ettumanoor,kottayam</div>
-                    <div class="star">
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star"></span>
-                        <span class="fa fa-star"></span>
-                    </div>
-
-                    <a href="hos-profile.html" class="btn">View</a>
-                </div>
-            </div>
+            {% endfor %}
+            
 
         </div>
     </div>

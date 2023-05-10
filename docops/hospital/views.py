@@ -35,6 +35,7 @@ def AddProfile(request):
                 form = AddHospitalProfileForm(request.POST, request.FILES)
                 if form.is_valid():
                     post=form.save(commit=False)
+                    post.location = request.POST['location']
                     post.user = User.objects.get(id=request.user.id)
                     if 'pic' in request.FILES:
                         post.pic = request.FILES['pic']

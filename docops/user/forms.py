@@ -1,8 +1,7 @@
 from django import forms
-from .models import Patient,Hospital,PatientProfile
-from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+from .models import Patient, Hospital, PatientProfile
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
-
 
 
 class SignupForm(UserCreationForm):
@@ -33,7 +32,7 @@ class SignupForm(UserCreationForm):
 
     class Meta:
         model = Patient
-        fields = ['email', 'password1', 'password2',]
+        fields = ['email', 'password1', 'password2', ]
 
 
 class LoginForm(AuthenticationForm):
@@ -58,46 +57,59 @@ class LoginForm(AuthenticationForm):
         model = Patient
         fields = "__all__"
 
-class ProfileForm(forms.ModelForm):
-    first_name = forms.CharField(
-        label='First Name',
-        widget=forms.PasswordInput(
-            attrs={
-                'class': 'text',
-                'placeholder': 'First Name'
-            })        
 
-    )
-    last_name = forms.CharField(
-        label='Last Name',
-        widget=forms.PasswordInput(
-            attrs={
-                'class': 'text',
-                'placeholder': 'Last Name'
-            })        
+# class ProfileForm(forms.ModelForm):
+#     first_name = forms.CharField(
+#         label='First Name',
+#         widget=forms.PasswordInput(
+#             attrs={
+#                 'class': 'text',
+#                 'placeholder': 'First Name'
+#             })
 
-    )
-    address = forms.CharField(
-        label='Address',
-        widget=forms.TextInput(
-            attrs={
-                'class': 'textarea',
-                'placeholder': 'Address'
-            })        
+#     )
+#     last_name = forms.CharField(
+#         label='Last Name',
+#         widget=forms.PasswordInput(
+#             attrs={
+#                 'class': 'text',
+#                 'placeholder': 'Last Name'
+#             })
 
-    )
-    pic = forms.ImageField(
-        label='Profile Picture',
-        widget=forms.TextInput(
-            attrs={
-                'class': 'pic_upload'
-            })        
+#     )
+#     address = forms.CharField(
+#         label='Address',
+#         widget=forms.TextInput(
+#             attrs={
+#                 'class': 'textarea',
+#                 'placeholder': 'Address'
+#             })
 
-    )      
+#     )
+#     pic = forms.ImageField(
+#         label='Profile Picture',
+#         widget=forms.TextInput(
+#             attrs={
+#                 'class': 'pic_upload'
+#             })
 
-    class Meta:
-        model = PatientProfile
-        fields = "__all__"
+#     )
+
+
+#     gender = forms.CharField(
+#         label='Gender',
+#         widget=forms.TextInput(
+#             attrs={
+#                 'class': 'text'
+#             })
+
+#     )
+
+
+# class Meta:
+#     model = PatientProfile
+#     fields = "__all__"
+
 
 class HosSignupForm(UserCreationForm):
     email = forms.EmailField(
@@ -128,7 +140,7 @@ class HosSignupForm(UserCreationForm):
 
     class Meta:
         model = Hospital
-        fields = ['email', 'password1', 'password2',]
+        fields = ['email', 'password1', 'password2', ]
 
 
 class HosLoginForm(AuthenticationForm):

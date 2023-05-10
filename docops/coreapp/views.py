@@ -3,6 +3,7 @@ from .forms import AddPatientProfileForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
+from user.models import HospitalProfile
 # Create your views here.
 User = get_user_model()
 
@@ -83,7 +84,11 @@ def p_dash(request):
 
 @login_required
 def profile(request):
-    return render(request, 'coreapp/profile.html')
+    if request.user.is_authenticated and request.user.role == 'PATIENT':
+        context = {
+            "user":request.user,
+        }
+    return render(request, 'coreapp/profile.html',context)
 @login_required
 def edit_profile(request):
     return render(request, 'coreapp/edit-profile.html')
@@ -95,10 +100,15 @@ def appointment(request):
 
 @login_required
 def doc_search(request):
+
     return render(request, 'coreapp/doc-search.html')
 @login_required
 def hos_search(request):
-    return render(request, 'coreapp/hos-search.html')
+    if request.user.is_authenticated and request.user.role == 'PATIENT':
+        context = {
+            "hospitals":HospitalProfile.objects.all()
+        }
+    return render(request, 'coreapp/hos-search.html',context)
 
 
 

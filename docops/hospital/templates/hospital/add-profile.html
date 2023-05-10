@@ -5,6 +5,9 @@
 {% block head %}
 <link rel="stylesheet" href="{% static 'hospital/css/style.css' %}">
 <link rel="stylesheet" href="{% static 'hospital/css/edit_profile.css' %}">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+{{form.media}}
 {% endblock %}
 {% block content %}
 <div class="main">
@@ -20,11 +23,26 @@
         <p>
             <label for="hospital_name">Hospital Name:</label>
         </p>
+        <input type="text" name="location" id="location">
+        <p><button onclick="getLocation()">Get Location</button></p>
         <p>{{form.hospital_name}}</p>
         <p><label for="">Address:</label></p>
         <p>{{form.address}}</p>
-        <p><input type="submit" value="Submit" class="btn"></p>
+        <p><label for="">Website:</label></p>
+        <p>{{form.website}}</p>
+        <p><label for="">Phone:</label></p>
+        <p>{{form.phone}}</p>
+        <p><button type="submit" class="btn">Save Changes</button></p>
 
     </form>
 </div>
+<script>
+    function getLocation() {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            document.getElementById("location").value = position.coords.latitude + "," + position.coords.longitude;
+        }, function (error) {
+            console.log(error);
+        });
+    }
+</script>
 {% endblock %}

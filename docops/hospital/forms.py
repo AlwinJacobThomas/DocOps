@@ -30,4 +30,4 @@ class AddHospitalProfileForm(forms.ModelForm):
 
     class Meta:
         model = HospitalProfile
-        fields = ['hospital_name', 'address', 'pic', ]
+        fields = ['hospital_name', 'address', 'pic', 'location', 'phone', 'website']

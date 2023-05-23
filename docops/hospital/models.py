@@ -27,7 +27,7 @@ class Doctor(models.Model):
     email = models.EmailField()
     pic = models.ImageField('Patient_Profile_Pic',upload_to=path_and_rename, blank=True, null=True)
     is_available = models.BooleanField(default=True)
-    hospital = models.ForeignKey(User, on_delete=models.CASCADE,related_name='doctor')
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE,related_name='doctor')
 
     def __str__(self):
         return self.name

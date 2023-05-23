@@ -105,7 +105,7 @@ def AddDoctor(request):
                 'error': False,
             })
         except ObjectDoesNotExist:
-            print("asdjaskkdash")
+            
             return redirect('hospital:hospital')
     else:
         return redirect('login')

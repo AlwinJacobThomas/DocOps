@@ -8,18 +8,23 @@
 {% block content %}
 
 <div class="container">
-    <div class="header">Hospital Dash</div>
-    <a href="{% url 'hospital:hospital' %}">hospital</a>
-    <p>{{ user.hospital.name }}</p>
-    <p>{{ user.hospital.address }}</p>
-    <p>
+    <div class="heading">Hospital Dash</div>
+    <div class="height20"></div>
+    <div class="card">
+        <div class="title">{{ user.hospital.hospital_name }}</div>
+        <div class="title">{{ user.hospital.address }}</div>
+      
         {% if user.hospital.pic %}
         <img src="{{ user.hospital.pic.url }}" class="dpicn" alt="dp">
         {% else %}
-        <img src="{% static 'hospital/img/default.png' %}" alt="">
+        <img src="{% static 'hospital/img/default.png' %}"  alt="">
         {% endif %}
-    </p>
-    <h1>Hospital Dash</h1>
+        <div class="height20"></div>
+        <a href="{% url 'hospital:doctor_list' %}">Doctors</a>
+    </div>
+        
+    
+    <!-- <h1>Hospital Dash</h1> -->
 </div>
 
 

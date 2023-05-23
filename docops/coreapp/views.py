@@ -1,9 +1,10 @@
 from django.shortcuts import render,redirect,reverse
-from .forms import AddPatientProfileForm
+from .forms import AddPatientProfileForm,DoctorReviewForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from user.models import HospitalProfile
+from hospital.models import Doctor,DoctorReview
 # Create your views here.
 User = get_user_model()
 
@@ -80,6 +81,7 @@ def c_dash(request):
     return render(request, 'coreapp/c-dash.html')
 @login_required
 def p_dash(request):
+    
     return render(request, 'coreapp/p-dash.html')
 
 @login_required
@@ -96,7 +98,11 @@ def edit_profile(request):
 
 @login_required
 def appointment(request):
-    return render(request, 'coreapp/appointment.html')
+    doctor = Doctor.objects.all()
+    context = {
+            "doctor" : doctor,
+        }
+    return render(request, 'coreapp/appointment.html',context)
 
 @login_required
 def doc_search(request):
@@ -110,5 +116,19 @@ def hos_search(request):
         }
     return render(request, 'coreapp/hos-search.html',context)
 
+
+def AddReview(request, doctor_id):
+    if request.method == 'POST':
+        form = DoctorReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.doctor_id = doctor_id
+            review.user = request.user
+            review.save()
+            return redirect('hospital:doctor_detail', doctor_id=doctor_id)  # Redirect to doctor detail page
+    else:
+        form = DoctorReviewForm()
+    
+    return render(request, 'doc/add_review.html', {'form': form})
 
 

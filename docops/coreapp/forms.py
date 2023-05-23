@@ -1,6 +1,6 @@
 from django import forms
 from user.models import Patient, Hospital, PatientProfile, HospitalProfile
-
+from hospital.models import Doctor,DoctorReview
 
 class AddPatientProfileForm(forms.ModelForm):
     first_name = forms.CharField(
@@ -39,3 +39,10 @@ class AddPatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
         fields = ['first_name','last_name', 'address', 'pic', 'gender', 'phone', 'dob']
+
+
+
+class DoctorReviewForm(forms.ModelForm):
+    class Meta:
+        model = DoctorReview
+        fields = ['rating', 'review']  

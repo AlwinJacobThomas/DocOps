@@ -14,4 +14,8 @@ urlpatterns =[
     path('edit_profile',views.EditProfile,name='edit_profile'),
     path('add_profile',views.AddProfile,name='add_profile'),
     path('appointment',views.appointment,name='appointment'),
+
+    #doc review
+    path('doctor/<int:doctor_id>/review/', views.AddReview, name='add_review'),
+
 ]

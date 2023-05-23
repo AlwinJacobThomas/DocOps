@@ -1,5 +1,6 @@
 from django import forms
 from user.models import Patient, Hospital, PatientProfile, HospitalProfile
+from .models import Doctor,DoctorReview
 
 
 class AddHospitalProfileForm(forms.ModelForm):
@@ -31,3 +32,13 @@ class AddHospitalProfileForm(forms.ModelForm):
     class Meta:
         model = HospitalProfile
         fields = ['hospital_name', 'address', 'pic', 'location', 'phone', 'website']
+
+class DoctorForm(forms.ModelForm):
+    class Meta:
+        model = Doctor
+        fields = '__all__'    
+
+
+      
+
+

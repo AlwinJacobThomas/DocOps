@@ -1,0 +1,32 @@
+{% extends 'hospital/layout.html' %}
+{% load static %}
+
+{% block title %}Hospital{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'hospital/css/style.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="main-container">
+    <div class="main">
+        {% for doctor in doctors %}
+        <div class="card ">
+            {% if doctor.pic %}
+            <img src="{{ doctor.pic.url }}" alt="John" style="width:100px;border-radius: 50%;">
+            {% else %}
+            <img src="{% static 'hospital/img/default.png' %}"  alt="">
+            {% endif %}
+            
+            <div class="height20"></div>
+            <h2 class="card-name">{{doctor.name}}</h2>
+
+            <a href="{% url 'hospital:doctor_profile' doctor_id=doctor.id %}" class="btn">View</a>
+        </div>
+        {% endfor %}
+
+        <div class="height20"></div>
+        <a href="{% url 'hospital:add_doctor' %}" class="btn">Add doctor</a>
+    </div>
+    
+</div>
+{% endblock %}

@@ -17,14 +17,20 @@
         {% if error == True %}
         <span style="color: red">{{form.errors}}</span>
         {% endif %}
+        
+        <div class="label">
+            <label for="hospital_name">Profile Picture:</label>
+            <input type="file" name="pic" id="pic">
+        </div>
+        
+        <br>
 
-        <input type="file" name="pic" id="pic">
-
-        <p>
-            <label for="hospital_name">Hospital Name:</label>
-        </p>
-        <input type="text" name="location" id="location">
-        <p><button onclick="getLocation()">Get Location</button></p>
+        <div class="label">
+            <label for="hospital_name">Hospital Location:</label>
+            <input type="text" name="location" id="location">
+            <button onclick="getLocation()">Get Location</button>
+        </div>
+        <br>
         <p>{{form.hospital_name}}</p>
         <p><label for="">Address:</label></p>
         <p>{{form.address}}</p>
@@ -32,6 +38,7 @@
         <p>{{form.website}}</p>
         <p><label for="">Phone:</label></p>
         <p>{{form.phone}}</p>
+        <br>
         <p><button type="submit" class="btn">Save Changes</button></p>
 
     </form>

@@ -1,18 +1,71 @@
+
+  
+
 {% extends 'coreapp/layout.html' %}
 {% load static %}
 
-{% block title %}Past{% endblock %}
+{% block title %}review and rating{% endblock %}
 {% block head %}<link rel="stylesheet" href="{% static 'coreapp/css/style.css' %}">{% endblock %}
 {% block content %}
+<style>
+  
+    
+    form {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
+    form h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    form label {
+        display: block;
+        margin-bottom: 10px;
+        color: #666;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form textarea {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+        margin-bottom: 10px;
+        color: #666;
+    }
+
+    
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        form {
+            max-width: 500px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        form {
+            max-width: 300px;
+        }
+    }
+</style>
 <div class="main-container">
+
     <div class="navcontainer">
         <div class="navbar">
             <ul class="side-nav-container">
                 <li class="active nav-options ">
                     <a class="nav-link " href="{% url 'coreapp:home' %}">
-                        <svg class="nav-icon active" id="Layer_1" data-name="Layer 1"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 121.74">
+                        <svg class="nav-icon active" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 122.88 121.74">
                             <title>categories</title>
                             <path
                                 d="M5,0H49.39a5,5,0,0,1,3.53,1.47A5,5,0,0,1,54.4,5V49.19a5,5,0,0,1-5,5H5a5,5,0,0,1-3.55-1.47l-.09-.11A5,5,0,0,1,0,49.19V5A5,5,0,0,1,5,0ZM73.49,67.53h44.37a5.05,5.05,0,0,1,5,5v44.17a5,5,0,0,1-5,5H73.49A5,5,0,0,1,70,120.27l-.09-.11a4.94,4.94,0,0,1-1.38-3.44V72.55A5,5,0,0,1,70,69l.1-.1a5,5,0,0,1,3.44-1.38ZM5,67.53H49.39A5,5,0,0,1,52.92,69a4.94,4.94,0,0,1,1.48,3.54v44.17a5,5,0,0,1-5,5H5a5,5,0,0,1-3.55-1.47l-.09-.11A5,5,0,0,1,0,116.72V72.55a5,5,0,0,1,5-5ZM73.49,0h44.37a5,5,0,0,1,5,5V49.19a5,5,0,0,1-5,5H73.49a5,5,0,0,1-5-5V5A5,5,0,0,1,70,1.47l.1-.09A5,5,0,0,1,73.49,0Z" />
@@ -21,17 +74,16 @@
                 </li>
                 <li class="nav-options">
                     <a class="nav-link" href="{% url 'coreapp:doc_search' %}">
-                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg"
-                            shape-rendering="geometricPrecision" text-rendering="geometricPrecision"
-                            image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd"
-                            viewBox="0 0 512 435.32">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
+                            text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
+                            clip-rule="evenodd" viewBox="0 0 512 435.32">
                             <path
                                 d="M420.14.52c58.98-6.77 113.22 53.61 83.44 113.04-8.48 16.93-25.74 37.06-44.83 56.81-12.87 13.33-26.16 26.52-39.6 39.65 2.97-8.03 4.59-16.92 4.59-26.57 0-19.09-8.42-37.67-21.96-51.22-13.07-13.07-31-21.62-50.87-21.62-19.91 0-37.88 8.5-50.96 21.58-13.5 13.5-21.88 32.03-21.88 51.26 0 8.14 1.19 15.79 3.4 22.85-41.75-40.4-80.61-86.18-82.18-130.08-1.65-46.33 34.9-76 76.94-75.47 37.57.51 53.38 19.19 77.84 42.99C374.4 22.55 388.79 4.11 420.14.52zM57.53 99.56c14.56-5.38 29.46 9 22.76 23.85-3.04 6.72-9.73 11.63-16.94 11.44-6.75-.19-12.04-4.6-15.89-9.79l-.24-.46c-8.9-.36-16.13.18-21.26 1.77-3.1.96-4.99 2.09-5.43 3.41-4.01 12.06 7.24 45.17 23.57 77.11.67 1.31 1.34 2.61 2.02 3.9a14.49 14.49 0 0 1 7.43 6.32c7.62 13.14 15.97 25.36 24.2 34.91 12.95 15.04 12.54 15.8 25.85 1.2 8.68-9.53 17.54-22.12 25.57-35.7 1.75-2.95 4.37-5.07 7.34-6.2 17.07-31.58 29.39-65.33 26.87-78.64-.57-3.03-3.28-5.01-7.17-6.32-5-1.68-11.52-2.35-18.6-2.52-.2.41-.4.81-.62 1.22-3.85 5.19-9.14 9.6-15.89 9.79-7.21.19-13.9-4.72-16.94-11.44-6.7-14.85 8.2-29.23 22.76-23.85 1.53.57 3.06 1.32 4.57 2.27.96.6 1.83 1.21 2.62 1.85 10.32.03 20.31.83 28.49 3.58 10.73 3.62 18.42 10.22 20.59 21.71 3.27 17.3-9.6 55.58-28.03 90.24 1.76 4.13 1.6 9-.85 13.16-9 15.2-19.06 29.46-29.12 40.49-6.04 6.64-12.25 12.23-18.44 16.38 13.85 102.91 209.11 193.49 230.64 27.81 2.9-22.37 2.18-44.68 1.52-67.15-.1-3.51-.2-6.94-.28-10.2-25.9-5.63-45.29-26.56-45.29-56.25s25.78-57.57 57.57-57.57 57.57 28.23 57.57 57.57-18.44 49.47-43.35 55.8c.08 3.32.17 6.58.27 9.92.68 23.52 1.34 45.61-1.42 69.11-23.74 202.09-266.34 108.36-283.62-25.46-8.18-4.74-16.56-12.32-24.66-21.72-9.51-11.04-18.95-24.8-27.39-39.37a14.58 14.58 0 0 1-.78-13.07l-1.34-2.61C7.76 179.99-4.29 140.63 1.43 123.47c2.7-8.08 9.11-13.41 18.61-16.36 7.65-2.37 17.59-3.15 29.3-2.59 1.04-.93 2.24-1.83 3.61-2.69 1.52-.95 3.05-1.7 4.58-2.27zm293.38 53.5c16.78 0 30.39 13.6 30.39 30.39 0 16.78-13.61 30.39-30.39 30.39-16.79 0-30.39-13.61-30.39-30.39 0-16.79 13.6-30.39 30.39-30.39z" />
                         </svg>
                         Doctors</a>
                 </li>
                 <li class="nav-options">
-                    <a class="nav-link" href="{% url 'coreapp:hos_search' %}l">
+                    <a class="nav-link" href="{% url 'coreapp:hos_search' %}">
                         <?xml version="1.0" encoding="utf-8"?><svg class="nav-icon" version="1.1" id="Layer_1"
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
                             y="0px" viewBox="0 0 122.88 107.47" style="enable-background:new 0 0 122.88 107.47"
@@ -65,63 +117,75 @@
             </ul>
         </div>
     </div>
+
+    <div class="container">
+        <h2>Add Review</h2>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="rating">Rating:</label>
+            <input type="number" id="rating" name="rating" min="1" max="5" required>
+          </div>
+          <div class="form-group">
+            <label for="review">Review:</label>
+            <textarea id="review" name="review" required></textarea>
+          </div>
+          <button type="submit" class="btn">Submit</button>
+        </form>
+      </div>
     <div class="main">
-
-        <h1>Patient Dashboard</h1>
-        <div class="container">
-            <div class="links box-container">
-                <a class="heading" href="{% url 'coreapp:home' %}">Upcoming Appointments</a>
-                <a class="active heading " href="{% url 'coreapp:p_dash' %}">Past Appointments</a>
-                <a class="heading " href="{% url 'coreapp:c_dash' %}">Cancelled Appointments</a>
-            </div>
-            <div class="height20"></div>
-            <div class="height20"></div>
-            <div class="box-container">
-                <div class="wide-card">
-                    <img src="{% static 'coreapp/img/doc.jpg' %}" alt="doc" height="150px">
-                    <div class="card-details">
-                        <p>Date: April 3, 2023</p>
-                        <p>Time: 10:00 AM</p>
-                        <p>Doctor: Dr. Smith</p>
-                        <!-- ---------------------------- -->
-                        
-                        <a href="{% url 'coreapp:appointment' %}" class="btn">View</a>
-                    </div>
-
-                </div>
-                <div class="wide-card">
-                    <img src="{% static 'coreapp/img/doc.jpg' %}" alt="doc" height="150px">
-                    <div class="card-details">
-                        <p>Date: April 3, 2023</p>
-                        <p>Time: 10:00 AM</p>
-                        <p>Doctor: Dr. Smith</p>
-                        <a href="{% url 'coreapp:appointment' %}" class="btn">View</a>
-                    </div>
-                </div>
-                <div class="wide-card">
-                    <img src="{% static 'coreapp/img/doc.jpg' %}" alt="doc" height="150px">
-                    <div class="card-details">
-                        <p>Date: April 3, 2023</p>
-                        <p>Time: 10:00 AM</p>
-                        <p>Doctor: Dr. Smith</p>
-                        <a href="{% url 'coreapp:appointment' %}" class="btn">View</a>
-                    </div>
-                </div>
-                <div class="wide-card">
-                    <img src="{% static 'coreapp/img/doc.jpg' %}" alt="doc" height="150px">
-                    <div class="card-details">
-                        <p>Date: April 3, 2023</p>
-                        <p>Time: 10:00 AM</p>
-                        <p>Doctor: Dr. Smith</p>
-                        <a href="{% url 'coreapp:appointment' %}" class="btn">View</a>
-                    </div>
-                </div>
-            </div>
-
-            
-        </div>
-
-
+        
     </div>
+
 </div>
+
+
+<style>
+    .container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #45a049;
+}
+
+</style>
+
 {% endblock %}

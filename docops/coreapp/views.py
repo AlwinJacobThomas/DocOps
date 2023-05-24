@@ -4,7 +4,8 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from user.models import HospitalProfile
-from hospital.models import Doctor,DoctorReview
+from hospital.models import Doctor,DoctorReview,Hospital
+from django.shortcuts import get_object_or_404
 # Create your views here.
 User = get_user_model()
 
@@ -106,13 +107,22 @@ def appointment(request):
 
 @login_required
 def doc_search(request):
-
-    return render(request, 'coreapp/doc-search.html')
+    doctors = Doctor.objects.all()
+    hospitals = []
+    for doctor in doctors:
+        hospital = doctor.hospital.hospital_name
+        hospitals.append(hospital)
+    context = {
+        'doctors': doctors,
+        'hospitals': hospitals
+    }
+    return render(request, 'coreapp/doc-search.html',context)
 @login_required
 def hos_search(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
         context = {
-            "hospitals":HospitalProfile.objects.all()
+            "hospitals":HospitalProfile.objects.all(),
+            "range":range(2)
         }
     return render(request, 'coreapp/hos-search.html',context)
 

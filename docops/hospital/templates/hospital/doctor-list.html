@@ -8,13 +8,22 @@
 {% block content %}
 
 <div class="main-container">
-    <div class="main">
+    
+    <div class="box-container">
+        
+        {% if message %}
+            {{message}}
+            <a href="{% url 'hospital:doctor_list' %}" class="btn">Doctor List</a>
+        {% else %}
+            <a href="{% url 'hospital:add_doctor' %}" class="btn">Add doctor</a>   
+        {% endif %}    
         {% for doctor in doctors %}
         <div class="card ">
+
             {% if doctor.pic %}
             <img src="{{ doctor.pic.url }}" alt="John" style="width:100px;border-radius: 50%;">
             {% else %}
-            <img src="{% static 'hospital/img/default.png' %}"  alt="">
+            <img src="{% static 'hospital/img/default.png' %}" style="width:100px;border-radius: 50%;" alt="">
             {% endif %}
             
             <div class="height20"></div>
@@ -25,7 +34,7 @@
         {% endfor %}
 
         <div class="height20"></div>
-        <a href="{% url 'hospital:add_doctor' %}" class="btn">Add doctor</a>
+        
     </div>
     
 </div>

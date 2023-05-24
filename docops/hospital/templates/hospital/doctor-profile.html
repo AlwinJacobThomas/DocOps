@@ -28,12 +28,16 @@
                 <p class="qualifications">{{ doctor.qualifications }}</p>
                 <p class="contact">Contact: {{ doctor.contact_number }}</p>
                 <p class="email">Email: {{ doctor.email }}</p>
-                <p class="address">Address: {{ doctor.address }}</p>
+                
                 <p class="availability">Availability: {% if doctor.is_available %}Available{% else %}Not Available{% endif %}</p>
               </div>
             </div>
             <div class="height20"></div>
-            <a href="{% url 'hospital:add_doctor' %}" class="btn">Edit</a>
+            <div class="box-container">
+              <a href="{% url 'hospital:edit_doctor' doctor_id=doctor.id  %}" class="btn">Edit</a>
+              <a href="{% url 'hospital:delete_doctor' doctor_id=doctor.id  %}" class="btn" style="background:red;">Delete</a>
+            </div>
+            
           </div>  
     </div>
     

@@ -10,38 +10,41 @@
 {{form.media}}
 {% endblock %}
 {% block content %}
-<div class="main">
-    <div class="header">Add Profile</div>
+<div class="main-container">
+    <div class="main">
+        <div class="heading">Add Profile</div>
 
-    <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
-        {% if error == True %}
-        <span style="color: red">{{form.errors}}</span>
-        {% endif %}
-        
-        <div class="label">
-            <label for="hospital_name">Profile Picture:</label>
-            <input type="file" name="pic" id="pic">
-        </div>
-        
-        <br>
+        <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {% if error == True %}
+            <span style="color: red">{{form.errors}}</span>
+            {% endif %}
 
-        <div class="label">
-            <label for="hospital_name">Hospital Location:</label>
-            <input type="text" name="location" id="location">
-            <button onclick="getLocation()">Get Location</button>
-        </div>
-        <br>
-        <p>{{form.hospital_name}}</p>
-        <p><label for="">Address:</label></p>
-        <p>{{form.address}}</p>
-        <p><label for="">Website:</label></p>
-        <p>{{form.website}}</p>
-        <p><label for="">Phone:</label></p>
-        <p>{{form.phone}}</p>
-        <br>
-        <p><button type="submit" class="btn">Save Changes</button></p>
+            <div class="label">
+                <label for="hospital_name">Profile Picture:</label>
+                <input type="file" name="pic" id="pic">
+            </div>
 
-    </form>
+            <br>
+
+            <div class="label">
+                <label for="hospital_name">Hospital Location:</label>
+                <input type="text" name="location" id="location">
+                <button onclick="getLocation()">Get Location</button>
+            </div>
+            <br>
+            <p>{{form.hospital_name}}</p>
+            <p><label for="">Address:</label></p>
+            <p>{{form.address}}</p>
+            <p><label for="">Website:</label></p>
+            <p>{{form.website}}</p>
+            <p><label for="">Phone:</label></p>
+            <p>{{form.phone}}</p>
+            <br>
+            <p><button type="submit" class="btn">Save Changes</button></p>
+
+        </form>
+    </div>
+</div>
 </div>
 <script>
     function getLocation() {
@@ -52,4 +55,52 @@
         });
     }
 </script>
+<style>
+    form {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    form h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    form label {
+        display: block;
+        margin-bottom: 10px;
+        color: #666;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form textarea {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+        margin-bottom: 10px;
+        color: #666;
+    }
+
+
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        form {
+            max-width: 500px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        form {
+            max-width: 300px;
+        }
+    }
+</style>
 {% endblock %}

@@ -44,4 +44,5 @@ text = "This product is amazing!"
 seq = tokenizer.texts_to_sequences([text])
 padded = pad_sequences(seq, maxlen=500)
 pred = model.predict(padded)
+
 print('Predicted rating:', pred)

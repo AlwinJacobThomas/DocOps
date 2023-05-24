@@ -36,7 +36,7 @@ class AddHospitalProfileForm(forms.ModelForm):
 class DoctorForm(forms.ModelForm):
     class Meta:
         model = Doctor
-        fields = '__all__'    
+        exclude = ['hospital']
 
 
       

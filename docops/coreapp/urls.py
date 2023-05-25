@@ -15,7 +15,9 @@ urlpatterns =[
     path('add_profile',views.AddProfile,name='add_profile'),
     path('appointment',views.appointment,name='appointment'),
 
-    #doc review
+    #doctor
+    path('booking',views.booking,name='booking'),
+    path('doctor_profile/<int:doctor_id>',views.DoctorProfile,name='doctor_profile'),
     path('doctor/<int:doctor_id>/review/', views.AddReview, name='add_review'),
-
+    path('doctor_booking/<int:doctor_id>',views.doctor_booking,name='doctor_booking'),
 ]

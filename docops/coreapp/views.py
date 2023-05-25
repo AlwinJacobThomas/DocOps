@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from user.models import HospitalProfile
 from hospital.models import Doctor,DoctorReview,Hospital
 from django.shortcuts import get_object_or_404
+from .models import Appointment
 # Create your views here.
 User = get_user_model()
 
@@ -106,17 +107,54 @@ def appointment(request):
     return render(request, 'coreapp/appointment.html',context)
 
 @login_required
+def booking(request):
+    if request.method == 'POST':
+        patient_name = request.POST.get('patient_name')
+        doctor_name = request.POST.get('doctor_name')
+        appointment_date = request.POST.get('appointment_date')
+        appointment_time = request.POST.get('appointment_time')
+        appointment_status = request.POST.get('appointment_status')
+
+        # Save the appointment to the database
+        appointment = Appointment.objects.create(
+            patient_name=patient_name,
+            doctor_name=doctor_name,
+            appointment_date=appointment_date,
+            appointment_time=appointment_time,
+            appointment_status=appointment_status
+        )
+        appointment.save()
+
+        # Redirect to a success page or another URL
+        return redirect('success')
+    return render(request, 'coreapp/doc/booking.html')
+@login_required
+def doctor_booking(request):
+    if request.user.is_authenticated and request.user.role == 'PATIENT':
+        doctor = Doctor.objects.get()
+        context = {
+            'doctor':doctor
+        }
+    return redirect(reverse('coreapp:appointment'))   
+    
+@login_required
 def doc_search(request):
-    doctors = Doctor.objects.all()
-    hospitals = []
-    for doctor in doctors:
-        hospital = doctor.hospital.hospital_name
-        hospitals.append(hospital)
+    doctor = Doctor.objects.all()
     context = {
-        'doctors': doctors,
-        'hospitals': hospitals
-    }
-    return render(request, 'coreapp/doc-search.html',context)
+            "doctors":doctor,
+            
+        }
+    return render(request, 'coreapp/doc/doc-search.html',context)
+@login_required
+def DoctorProfile(request,doctor_id):
+    doctor = Doctor.objects.get(id=doctor_id)
+    context = {
+            "doctors":doctor,
+                                                                
+        }
+    return render(request, 'coreapp/doc/doc-detail.html',context)
+
+
 @login_required
 def hos_search(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
@@ -124,8 +162,10 @@ def hos_search(request):
             "hospitals":HospitalProfile.objects.all(),
             "range":range(2)
         }
-    return render(request, 'coreapp/hos-search.html',context)
+    return render(request, 'coreapp/hos/hos-search.html',context)
 
+
+          
 
 def AddReview(request, doctor_id):
     if request.method == 'POST':
@@ -142,3 +182,23 @@ def AddReview(request, doctor_id):
     return render(request, 'doc/add_review.html', {'form': form})
 
 
+# F C |F F C  jupiter
+# Gm Am | Gm F C
+
+# F F | F F C 
+# Gm Am | Gm F C 
+
+# Dm C |Dm C 
+# Gm Am | Gm F C  
+
+# F C |F F C  jupiter
+# Gm Am | Gm F C
+
+# F F | F F C 
+# Gm Am | Gm F C 
+
+# Dm C |Dm C 
+# Gm Am | Gm F C  
+
+# F C |F F C  jupiter
+# Gm Am | Gm F C

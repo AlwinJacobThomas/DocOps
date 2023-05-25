@@ -1,5 +1,5 @@
 from django.db import models
-from user.models import User,Hospital
+from user.models import User,Hospital,Patient
 import os,uuid
 from django.utils.deconstruct import deconstructible
 # Create your models here.
@@ -33,8 +33,8 @@ class Doctor(models.Model):
         return self.name
 
 class DoctorReview(models.Model):
-    doctor = models.ForeignKey('Doctor', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    user = models.ForeignKey(Patient, on_delete=models.CASCADE)
     rating = models.PositiveIntegerField()
     review = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

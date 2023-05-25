@@ -93,9 +93,9 @@ def AddDoctor(request):
             if request.method == "POST":
                 form = DoctorForm(request.POST, request.FILES)
                 if form.is_valid():
-                    post = form.save(commit=False)
-                    post.hospital = request.user.hospital
-                    post.save()
+                    doctor = form.save(commit=False)
+                    doctor.hospital = request.user.hospital.user
+                    doctor.save()
                     return redirect(reverse('hospital:doctor_list'))
                 else:
                     return render(request, 'hospital/add-doctor.html', {

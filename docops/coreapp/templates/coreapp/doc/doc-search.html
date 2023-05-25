@@ -115,7 +115,7 @@
                 <h2 class="card-name">{{doctor.name}}</h2>
                 <div class="title">{{doctor.specialization}}</div>
                 <div>{{doctor.qualifications}}</div>
-                <div>{{hospitals.hospital_name}}</div>
+                <div>{{doctor.hospital.name}}</div>
                 <div class="star">
                     {% for x in range %}
                     <span class="fa fa-star checked"></span>
@@ -126,7 +126,7 @@
                     {% endfor %}
                 </div>
                 <div class="height20"></div>
-                <a href="doc-profile.html" class="btn">View</a>
+                <a href="{% url 'coreapp:doctor_profile' doctor_id=doctor.id %}" class="btn">View</a>
             </div>
             {% endfor %}
 

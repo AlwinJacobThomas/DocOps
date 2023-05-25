@@ -1,13 +1,13 @@
-{% extends 'hospital/layout.html' %}
+{% extends 'coreapp/layout.html' %}
 {% load static %}
 
 {% block title %}Doctor{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="{% static 'hospital/css/style.css' %}">
-<link rel="stylesheet" href="{% static 'hospital/css/edit_profile.css' %}">
+<link rel="stylesheet" href="{% static 'coreapp/css/style.css' %}">
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
+{{form.media}}
 {% endblock %}
 {% block content %}
 <div class="main-container">
@@ -18,7 +18,7 @@
                 {% if doctor.pic %}
                 <img src="{{ doctor.pic.url }}"  alt="dp">
                 {% else %}
-                <img src="{% static 'coreapp/img/default.png' %}"   alt="">
+                <img src="{% static 'hospital/img/default.png' %}"   alt="">
                 {% endif %}
               </div>
               <div class="profile-details">
@@ -34,8 +34,8 @@
             </div>
             <div class="height20"></div>
             <div class="box-container">
-              <a href="{% url 'hospital:edit_doctor' doctor_id=doctor.id  %}" class="btn">Edit</a>
-              <a href="{% url 'hospital:delete_doctor' doctor_id=doctor.id  %}" class="btn" style="background:red;">Delete</a>
+              <a href="{% url 'coreapp:booking' %}" class="btn">Book</a>
+              
             </div>
             
           </div>  

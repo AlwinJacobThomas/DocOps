@@ -1,6 +1,7 @@
 from django import forms
 from user.models import Patient, Hospital, PatientProfile, HospitalProfile
-from hospital.models import Doctor,DoctorReview
+from hospital.models import Doctor
+from .models import Appointment, AppointmentReview
 
 class AddPatientProfileForm(forms.ModelForm):
     first_name = forms.CharField(
@@ -42,7 +43,29 @@ class AddPatientProfileForm(forms.ModelForm):
 
 
 
-class DoctorReviewForm(forms.ModelForm):
+class AppointmentReviewForm(forms.ModelForm):
     class Meta:
-        model = DoctorReview
-        fields = ['rating', 'review']  
+        model = AppointmentReview
+        fields = ['doctor_review', 'hospital_review']  
+
+class AppointmentBookingForm(forms.ModelForm):
+    appointment_date = forms.CharField(
+        label='Date',
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'oninput': "this.className = ''"
+            })
+    )
+    appointment_time = forms.CharField(
+        label='Time',
+        widget=forms.DateInput(
+            attrs={
+                'type': 'time',
+                'oninput': "this.className = ''"
+            })
+    )
+
+    class Meta:
+        model = Appointment
+        fields = ['appointment_date', 'appointment_time']

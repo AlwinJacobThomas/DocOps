@@ -1,12 +1,14 @@
 from django.shortcuts import render,redirect,reverse
-from .forms import AddPatientProfileForm,DoctorReviewForm
+from .forms import AddPatientProfileForm,AppointmentReviewForm, AppointmentBookingForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from user.models import HospitalProfile
-from hospital.models import Doctor,DoctorReview,Hospital
+from hospital.models import Doctor,Hospital
 from django.shortcuts import get_object_or_404
-from .models import Appointment
+from .models import Appointment, AppointmentReview
+from django.http import JsonResponse
+
 # Create your views here.
 User = get_user_model()
 
@@ -169,7 +171,7 @@ def hos_search(request):
 
 def AddReview(request, doctor_id):
     if request.method == 'POST':
-        form = DoctorReviewForm(request.POST)
+        form = AppointmentReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
             review.doctor_id = doctor_id
@@ -177,28 +179,62 @@ def AddReview(request, doctor_id):
             review.save()
             return redirect('hospital:doctor_detail', doctor_id=doctor_id)  # Redirect to doctor detail page
     else:
-        form = DoctorReviewForm()
+        form = AppointmentReviewForm()
     
     return render(request, 'doc/add_review.html', {'form': form})
 
+@login_required
+def AppointmentBookingView(request, doctor_id):
+    form = AppointmentBookingForm()
+    doctor = Doctor.objects.get(id=doctor_id)
+    if request.method == 'POST':
+        form = AppointmentBookingForm(request.POST)
+        if form.is_valid():
+            appointment = form.save(commit=False)
+            appointment.doctor = doctor
+            appointment.patient = request.user.patient.user
+            appointment.hospital = doctor.hospital
+            appointment.appointment_status = 'pending'
+            appointment.save()
+            return redirect(reverse('coreapp:appointments'))
+        else:
+            return JsonResponse({'message': 'Validation Failed'})
+    else:
+        return render(request, 'coreapp/appointment_booking.html', {
+            'form': AppointmentBookingForm(),
+            'doctor_id': doctor_id
+        })
 
-# F C |F F C  jupiter
-# Gm Am | Gm F C
+@login_required
+def AppointmentsView(request):
+    reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=request.user.patient.user)
+    not_reviewed_appointments = Appointment.objects.exclude(appointment_review__appointment__patient=request.user.patient.user)
 
-# F F | F F C 
-# Gm Am | Gm F C 
+    completed = {
+        'reviewed_appointments': reviewed_appointments,
+        'not_reviewed_appointments': not_reviewed_appointments
+    }
 
-# Dm C |Dm C 
-# Gm Am | Gm F C  
+    return render(request, 'coreapp/appointments.html', {
+        'pending': Appointment.objects.filter(appointment_status='pending').order_by('-id'),
+        'cancelled': Appointment.objects.filter(appointment_status='cancelled').order_by('-id'),
+        'completed': completed,
+    })
 
-# F C |F F C  jupiter
-# Gm Am | Gm F C
 
-# F F | F F C 
-# Gm Am | Gm F C 
+@login_required
+def TreatmentReviewView(request, appointment_id):
+    appointment = Appointment.objects.get(id=appointment_id)
+    if request.method == 'POST':
+        hos_review = request.POST.get('hos_review')
+        doc_review = request.POST.get('doc_review')
 
-# Dm C |Dm C 
-# Gm Am | Gm F C  
+        appointmentReview = AppointmentReview(
+            hospital_review = hos_review,
+            doctor_review = doc_review,
+            appointment = appointment
+        )
 
-# F C |F F C  jupiter
-# Gm Am | Gm F C
+        appointmentReview.save()
+
+        return redirect(reverse('coreapp:doctor_profile'))

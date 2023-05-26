@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse, redirect,get_object_or_404
 from .forms import AddHospitalProfileForm
 from user.models import HospitalProfile
-from .models import Doctor, DoctorReview
+from .models import Doctor
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required

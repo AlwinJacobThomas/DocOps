@@ -31,17 +31,3 @@ class Doctor(models.Model):
 
     def __str__(self):
         return self.name
-
-class DoctorReview(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    user = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    rating = models.PositiveIntegerField()
-    review = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Review for {self.doctor.name} by {self.user.username}"
-    
-
-
-

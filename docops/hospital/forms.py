@@ -1,6 +1,6 @@
 from django import forms
 from user.models import Patient, Hospital, PatientProfile, HospitalProfile
-from .models import Doctor,DoctorReview
+from .models import Doctor
 
 
 class AddHospitalProfileForm(forms.ModelForm):

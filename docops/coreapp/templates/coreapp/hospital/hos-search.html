@@ -105,7 +105,7 @@
             </div> -->
             {% for hos in hospitals %}
             <div class="wide-card">
-                <img src="{% static 'img/hospital.jpg' %}" alt="John" style="height: 150px;border-radius: 10px 0 0 10px ;">
+                <img src="{{ hos.pic.url}}" alt="John" style="height: 150px;border-radius: 10px 0 0 10px ;">
                 <div class="wide-card-details">
 
                     <h2 class="card-name">{{hos.hospital_name}}</h2>

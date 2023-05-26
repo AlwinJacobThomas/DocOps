@@ -18,7 +18,7 @@ def home(request):
         
         context = {
             "user" : request.user,
-            
+            "appointments":"hi"
             
         }
         if request.user.role=='HOSPITAL':
@@ -167,7 +167,7 @@ def hos_search(request):
             "hospitals":HospitalProfile.objects.all(),
             "range":range(2)
         }
-    return render(request, 'coreapp/hos/hos-search.html',context)
+    return render(request, 'coreapp/hospital/hos-search.html',context)
 
 
           

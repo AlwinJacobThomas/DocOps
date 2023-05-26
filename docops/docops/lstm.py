@@ -48,7 +48,7 @@ model.fit(train_sequences, train_tags, epochs=5, validation_data=(test_sequences
 
 
 # Define a new review
-new_review = "not at all good service . "
+new_review = "i am so satisfied.Great way of talking and good communication skill of the doctor"
 
 # Tokenize and pad the new review sequence
 new_sequences = tokenizer.texts_to_sequences([new_review])

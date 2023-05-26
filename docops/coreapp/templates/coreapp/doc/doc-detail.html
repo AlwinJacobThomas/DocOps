@@ -17,7 +17,7 @@
           {% if doctor.pic %}
           <img src="{{ doctor.pic.url }}" alt="dp">
           {% else %}
-          <img src="{% static 'hospital/img/default.png' %}" alt="">
+          <img src="{% static 'coreapp/img/default.png' %}" alt="">
           {% endif %}
         </div>
         <div class="profile-details">
@@ -36,7 +36,7 @@
       <div class="height20"></div>
       <div class="box-container">
         <a href="{% url 'coreapp:booking' %}" class="btn">Book</a>
-        <a href="{% url 'coreapp:add_review' %}" class="btn">Review</a>
+        <a href="#" class="btn">Review</a>
 
       </div>
 

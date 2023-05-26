@@ -158,15 +158,18 @@ def doctor_booking(request):
             'doctor':doctor
         }
     return redirect(reverse('coreapp:appointment'))   
-    
+
 @login_required
 def doc_search(request):
-    doctor = Doctor.objects.all()
-    context = {
-            "doctors":doctor,
-            
+    if request.user.is_authenticated and request.user.role == 'PATIENT':
+        doctors = Doctor.objects.all()
+        context = {
+            "doctors": doctors,
         }
-    return render(request, 'coreapp/doc/doc-search.html',context)
+        return render(request, 'coreapp/doc/doc-search.html', context)
+    else:
+        return HttpResponse("Unauthorized", status=401)
+
 @login_required
 def DoctorProfile(request,doctor_id):
     doctor = Doctor.objects.get(id=doctor_id)
@@ -183,15 +186,10 @@ def hos_search(request):
         hospitals = HospitalProfile.objects.all()
         context = {
             "hospitals": hospitals,
-            "range": range(2)
         }
         return render(request, 'coreapp/hos/hos-search.html', context)
     else:
         return HttpResponse("Unauthorized", status=401)
-
-
-
-          
 
 def AddReview(request, doctor_id):
     if request.method == 'POST':

@@ -2,7 +2,8 @@
 {% load static %}
 
 {% block title %}Hospitals{% endblock %}
-{% block head %}<link rel="stylesheet" href="{% static 'coreapp/css/style.css' %}">{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'coreapp/css/style.css' %}">{% endblock %}
 {% block content %}
 
 <div class="main-container">
@@ -66,7 +67,6 @@
     </div>
     <div class="main">
         <div class="search-sec">
-
             <div class="search">
                 <input class="search-bar" type="text" name="" id="searchInput" placeholder="Search Hospitals">
 
@@ -78,13 +78,9 @@
                     </svg>
                 </a>
             </div>
-
-
-
         </div>
 
-        <div class="box-container">
-
+        <div class="box-container" id="hospitalList">
             <!-- <div class="wide-card">
                 <img src="{% static 'img/hospital.jpg' %}" alt="John" style="height: 150px; border-radius: 10px 0 0 10px ;">
                 <div class="wide-card-details">
@@ -105,7 +101,8 @@
             </div> -->
             {% for hos in hospitals %}
             <div class="wide-card">
-                <img src="{% static 'img/hospital.jpg' %}" alt="John" style="height: 150px;border-radius: 10px 0 0 10px ;">
+                <img src="{% static 'img/hospital.jpg' %}" alt="John"
+                    style="height: 150px;border-radius: 10px 0 0 10px ;">
                 <div class="wide-card-details">
 
                     <h2 class="card-name">{{hos.hospital_name}}</h2>
@@ -123,27 +120,26 @@
                 </div>
             </div>
             {% endfor %}
-            
-
         </div>
     </div>
 </div>
 <script>
     const searchInput = document.getElementById('searchInput');
     const hospitalList = document.getElementById('hospitalList');
-  
+
     searchInput.addEventListener('input', () => {
-      const searchValue = searchInput.value.toLowerCase();
-      const hospitals = hospitalList.getElementsByTagName('li');
-  
-      for (let i = 0; i < hospitals.length; i++) {
-        const hospitalName = hospitals[i].textContent.toLowerCase();
-        if (hospitalName.includes(searchValue)) {
-          hospitals[i].style.display = 'block';
-        } else {
-          hospitals[i].style.display = 'none';
+        const searchValue = searchInput.value.toLowerCase();
+        const cards = hospitalList.querySelectorAll('.wide-card')
+        const hospitals = hospitalList.querySelectorAll('.card-name');
+
+        for (let i = 0; i < hospitals.length; i++) {
+            const hospitalName = hospitals[i].textContent.toLowerCase();
+            if (hospitalName.includes(searchValue)) {
+                cards[i].style.display = 'block';
+            } else {
+                cards[i].style.display = 'none';
+            }
         }
-      }
     });
-  </script>
+</script>
 {% endblock %}

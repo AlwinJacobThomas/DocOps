@@ -85,7 +85,7 @@
 
         </div>
 
-        <div class="box-container">
+        <div class="box-container" id="doctorsList">
             <!-- <div class="card">
                 <img src="{% static 'coreapp/img/doc.jpg' %}" alt="John" style="width:100px;border-radius: 50%;">
                 <div class="height20"></div>
@@ -133,4 +133,24 @@
         </div>
     </div>
 </div>
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const doctorsList = document.getElementById('doctorsList');
+
+    searchInput.addEventListener('input', () => {
+        const searchValue = searchInput.value.toLowerCase();
+        const cards = doctorsList.querySelectorAll('.card')
+        const doctors = doctorsList.querySelectorAll('.card-name');
+
+        for (let i = 0; i < doctors.length; i++) {
+            const doctorName = doctors[i].textContent.toLowerCase();
+            console.log(doctorName)
+            if (doctorName.includes(searchValue)) {
+                cards[i].style.display = 'block';
+            } else {
+                cards[i].style.display = 'none';
+            }
+        }
+    });
+</script>
 {% endblock %}

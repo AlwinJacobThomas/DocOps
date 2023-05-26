@@ -4,10 +4,9 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from user.models import HospitalProfile
-from hospital.models import Doctor,Hospital
-from django.shortcuts import get_object_or_404
+from hospital.models import Doctor
 from .models import Appointment, AppointmentReview
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
 
 # Create your views here.
 User = get_user_model()
@@ -29,7 +28,6 @@ def AddProfile(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
         try:
             instance = request.user.patient
-            # print("hiiii "+request.user.patient)
             return redirect('coreapp:home')
         except ObjectDoesNotExist:
             form = AddPatientProfileForm()
@@ -54,6 +52,7 @@ def AddProfile(request):
             })
     else:
         return redirect('coreapp:home')
+    
 def EditProfile(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
         try:
@@ -174,7 +173,7 @@ def doc_search(request):
 def DoctorProfile(request,doctor_id):
     doctor = Doctor.objects.get(id=doctor_id)
     context = {
-            "doctors":doctor,
+            "doctor":doctor,
                                                                 
         }
     return render(request, 'coreapp/doc/doc-detail.html',context)

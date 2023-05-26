@@ -68,6 +68,7 @@
     <div class="main">
 
         <h1>Patient Dashboard</h1>
+
         <div class="container">
             <div class="links box-container">
                 <a class="active heading" href="{% url 'coreapp:home' %}">Upcoming Appointments</a>
@@ -80,12 +81,14 @@
                 {% for i in pending %}
                 <div class="wide-card">
                     <div class="card-details">
+
                         <p>Date: {{i.appointment_date}}</p>
                         <p>Time: {{i.appointment_time}}</p>
                         <p>Doctor: {{i.doctor.name}}</p>
                     </div>
                 </div>
                 {% endfor %}
+
             </div>
 
             

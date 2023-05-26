@@ -6,8 +6,9 @@
 <link rel="stylesheet" href="{% static 'hospital/css/style.css' %}">
 {% endblock %}
 {% block content %}
-
-<div class="main-container">
+<div class="height20"></div>
+<div class="height20"></div>
+<div class="main">
     
     <div class="box-container">
         
@@ -16,23 +17,28 @@
             <a href="{% url 'hospital:doctor_list' %}" class="btn">Doctor List</a>
         {% else %}
             <a href="{% url 'hospital:add_doctor' %}" class="btn">Add doctor</a>   
-        {% endif %}    
+        {% endif %}
+        {% if not doctors %}
+            <h1>No Doctors Available</h1>
+            
+        {% else %}
+            
         {% for doctor in doctors %}
         <div class="card ">
-
             {% if doctor.pic %}
-            <img src="{{ doctor.pic.url }}" alt="John" style="width:100px;border-radius: 50%;">
+            <img src="{{ doctor.pic.url }}" alt="John" style="height:100px; width:100px; border-radius: 50%;">
             {% else %}
-            <img src="{% static 'hospital/img/default.png' %}" style="width:100px;border-radius: 50%;" alt="">
+            <img src="{% static 'coreapp/img/default.png' %}" style="height:100px;width:100px;border-radius: 50%;" alt="">
             {% endif %}
             
             <div class="height20"></div>
             <h2 class="card-name">{{doctor.name}}</h2>
-
+            <h2 class="title">{{doctor.specialization}}</h2>
+            <div class="height20"></div>
             <a href="{% url 'hospital:doctor_profile' doctor_id=doctor.id %}" class="btn">View</a>
         </div>
         {% endfor %}
-
+        {% endif %}
         <div class="height20"></div>
         
     </div>

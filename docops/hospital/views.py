@@ -133,15 +133,12 @@ def EditDoctor(request, doctor_id):
         return redirect('hospital:doctor_list')
 def DeleteDoctor(request, doctor_id):
     if request.user.is_authenticated and request.user.role == 'HOSPITAL':
-        doctor = get_object_or_404(Doctor, id=doctor_id)
-        
-        if request.method == "POST":
-            doctor.delete()
-            return redirect('hospital:doctor_list')
-        
-        return render(request, 'hospital/doctor-list.html',{'message':'successfully deleted'})
-    else:
-        return redirect('hospital:doctor_list')
+        doctor = Doctor.objects.get(id=doctor_id)
+        doctor.delete()
+        context ={
+            "message":"sucessfully deleted"
+        }
+        return redirect(reverse('hospital:doctor_list'))
        
          
 def DoctorProfile(request, doctor_id):

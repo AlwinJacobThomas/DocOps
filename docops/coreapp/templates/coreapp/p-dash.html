@@ -77,45 +77,26 @@
             <div class="height20"></div>
             <div class="height20"></div>
             <div class="box-container">
+                {% for i in completed.not_reviewed_appointments %}
                 <div class="wide-card">
-                    <img src="{% static 'coreapp/img/doc.jpg' %}" alt="doc" height="150px">
                     <div class="card-details">
-                        <p>Date: April 3, 2023</p>
-                        <p>Time: 10:00 AM</p>
-                        <p>Doctor: Dr. Smith</p>
-                        <!-- ---------------------------- -->
-                        
-                        <a href="{% url 'coreapp:appointment' %}" class="btn">View</a>
-                    </div>
+                        <p>Date: {{i.appointment_date}}</p>
+                        <p>Time: {{i.appointment_time}}</p>
+                        <p>Doctor: {{i.doctor.name}}</p>
 
-                </div>
-                <div class="wide-card">
-                    <img src="{% static 'coreapp/img/doc.jpg' %}" alt="doc" height="150px">
-                    <div class="card-details">
-                        <p>Date: April 3, 2023</p>
-                        <p>Time: 10:00 AM</p>
-                        <p>Doctor: Dr. Smith</p>
-                        <a href="{% url 'coreapp:appointment' %}" class="btn">View</a>
+                        <a href="{% url 'coreapp:treatment_review' i.id %}" class="btn">Review</a>
                     </div>
                 </div>
+                {% endfor %}
+                {% for i in completed.reviewed_appointments %}
                 <div class="wide-card">
-                    <img src="{% static 'coreapp/img/doc.jpg' %}" alt="doc" height="150px">
                     <div class="card-details">
-                        <p>Date: April 3, 2023</p>
-                        <p>Time: 10:00 AM</p>
-                        <p>Doctor: Dr. Smith</p>
-                        <a href="{% url 'coreapp:appointment' %}" class="btn">View</a>
+                        <p>Date: {{i.appointment_date}}</p>
+                        <p>Time: {{i.appointment_time}}</p>
+                        <p>Doctor: {{i.doctor.name}}</p>
                     </div>
                 </div>
-                <div class="wide-card">
-                    <img src="{% static 'coreapp/img/doc.jpg' %}" alt="doc" height="150px">
-                    <div class="card-details">
-                        <p>Date: April 3, 2023</p>
-                        <p>Time: 10:00 AM</p>
-                        <p>Doctor: Dr. Smith</p>
-                        <a href="{% url 'coreapp:appointment' %}" class="btn">View</a>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
 
             

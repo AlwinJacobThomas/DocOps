@@ -7,26 +7,21 @@ from user.models import HospitalProfile
 from hospital.models import Doctor,Hospital
 from django.shortcuts import get_object_or_404
 from .models import Appointment, AppointmentReview
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 # Create your views here.
 User = get_user_model()
 
+@login_required
 def home(request):
-    context = {"profile":None}
     if request.user.is_authenticated:
-        
-        context = {
-            "user" : request.user,
-            "appointments":"hi"
-            
-        }
         if request.user.role=='HOSPITAL':
             return redirect(reverse('hospital:hospital'))
-        else :
-            return render(request, 'coreapp/u-dash.html',context)
-        
-    else:   
+        else:
+            return render(request, 'coreapp/u-dash.html', {
+                'pending': Appointment.objects.filter(appointment_status='pending').order_by('-id'),
+            })
+    else:
         return render(request, 'coreapp/landing.html')
 
 @login_required
@@ -83,12 +78,35 @@ def EditProfile(request):
             return redirect('coreapp:home')   
         
 @login_required
-def c_dash(request):
-    return render(request, 'coreapp/c-dash.html')
-@login_required
 def p_dash(request):
-    
-    return render(request, 'coreapp/p-dash.html')
+    if request.user.is_authenticated:
+        if request.user.role=='HOSPITAL':
+            return redirect(reverse('hospital:hospital'))
+        else:
+            reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=request.user.patient.user, appointment_status='completed')
+            not_reviewed_appointments = Appointment.objects.filter(appointment_status='completed').exclude(appointment_review__appointment__patient=request.user.patient.user)
+
+            completed = {
+                'reviewed_appointments': reviewed_appointments,
+                'not_reviewed_appointments': not_reviewed_appointments
+            }
+            return render(request, 'coreapp/p-dash.html', {
+                'completed': completed,
+            })
+    else:
+        return render(request, 'coreapp/landing.html')
+
+@login_required
+def c_dash(request):
+    if request.user.is_authenticated:
+        if request.user.role=='HOSPITAL':
+            return redirect(reverse('hospital:hospital'))
+        else:
+            return render(request, 'coreapp/c-dash.html', {
+                'cancelled': Appointment.objects.filter(appointment_status='cancelled').order_by('-id')
+            })
+    else:
+        return render(request, 'coreapp/landing.html')
 
 @login_required
 def profile(request):
@@ -163,11 +181,15 @@ def DoctorProfile(request,doctor_id):
 @login_required
 def hos_search(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
+        hospitals = HospitalProfile.objects.all()
         context = {
-            "hospitals":HospitalProfile.objects.all(),
-            "range":range(2)
+            "hospitals": hospitals,
+            "range": range(2)
         }
-    return render(request, 'coreapp/hospital/hos-search.html',context)
+        return render(request, 'coreapp/hos/hos-search.html', context)
+    else:
+        return HttpResponse("Unauthorized", status=401)
+
 
 
           
@@ -186,6 +208,16 @@ def AddReview(request, doctor_id):
     
     return render(request, 'doc/add_review.html', {'form': form})
 
+
+@login_required
+def DoctorDetailView(request, doctor_id):
+    doctor = Doctor.objects.get(id=doctor_id)
+    return render(request, 'coreapp/doctor_detail.html', {
+        'doctor': doctor,
+        'doctor_id': doctor_id
+    })
+
+    
 @login_required
 def AppointmentBookingView(request, doctor_id):
     form = AppointmentBookingForm()
@@ -201,7 +233,7 @@ def AppointmentBookingView(request, doctor_id):
             appointment.save()
             return redirect(reverse('coreapp:appointments'))
         else:
-            return JsonResponse({'message': 'Validation Failed'})
+            return HttpResponse("Invalid data", status=401)
     else:
         return render(request, 'coreapp/appointment_booking.html', {
             'form': AppointmentBookingForm(),
@@ -228,16 +260,22 @@ def AppointmentsView(request):
 @login_required
 def TreatmentReviewView(request, appointment_id):
     appointment = Appointment.objects.get(id=appointment_id)
-    if request.method == 'POST':
-        hos_review = request.POST.get('hos_review')
-        doc_review = request.POST.get('doc_review')
+    reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=request.user.patient.user)
+    if appointment.appointment_status == 'completed' and appointment not in reviewed_appointments:
+        if request.method == 'POST':
+            hos_review = request.POST.get('hos_review')
+            doc_review = request.POST.get('doc_review')
 
-        appointmentReview = AppointmentReview(
-            hospital_review = hos_review,
-            doctor_review = doc_review,
-            appointment = appointment
-        )
-
-        appointmentReview.save()
-
-        return redirect(reverse('coreapp:doctor_profile'))
+            appointmentReview = AppointmentReview(
+                hospital_review = hos_review,
+                doctor_review = doc_review,
+                appointment = appointment
+            )
+            appointmentReview.save()
+            return redirect(reverse('coreapp:doctor_detail', kwargs={'doctor_id': appointment.doctor.id}))
+        return render(request, 'coreapp/treatment_review.html', {
+            'appointment_id': appointment_id,
+            'doctor_id': appointment.doctor.id
+        })
+    else:
+        return HttpResponse("Error", status=401)

@@ -11,10 +11,10 @@ function showTab(n) {
     }
     if (n == (x.length - 1)) {
         document.getElementById("nextBtn").innerHTML = "Mark Response";
-        document.getElementById("nextBtn").type = "submit";
+        document.getElementById("nextBtn").addEventListener("click", submitForm);
     } else {
         document.getElementById("nextBtn").innerHTML = "Next";
-        document.getElementById("nextBtn").type = "button";
+        document.getElementById("nextBtn").removeEventListener("click", submitForm);
     }
     fixStepIndicator(n);
 }
@@ -24,10 +24,6 @@ function nextPrev(n) {
     if (n == 1 && !validateForm()) return false;
     x[currentTab].style.display = "none";
     currentTab = currentTab + n;
-    if (currentTab >= x.length) {
-        // submitForm();
-        return false;
-    }
     showTab(currentTab);
 }
 
@@ -55,12 +51,39 @@ function fixStepIndicator(n) {
     x[n].className += " active";
 }
 
-function closeRegForm() {
-    modal_wrapper = document.getElementById('modal_wrapper');
-    modal_wrapper.classList.remove('show');
-}
+function submitForm() {
+    var form = document.getElementById("regForm");
+    var responseCard = document.getElementById("response-card");
+    var loading = document.getElementById("loading");
+    var success = document.getElementById("success");
+    var error = document.getElementById("error");
 
-function openRegForm() {
-    modal_wrapper = document.getElementById('modal_wrapper');
-    modal_wrapper.classList.add('show');
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", form.action, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onload = function () {
+        form.remove()
+        responseCard.classList.add('show')
+        loading.style.display = "none";
+        if (xhr.status === 200) {
+            success.style.display = "block";
+            // Handle success response here
+        } else {
+            error.style.display = "block";
+            // Handle error response here
+        }
+    };
+
+    xhr.onerror = function () {
+        loading.style.display = "none";
+        error.style.display = "block";
+        // Handle error response here
+    };
+
+    var formData = new FormData(form);
+    var params = new URLSearchParams(formData).toString();
+
+    xhr.send(params);
+    loading.style.display = "block";
 }

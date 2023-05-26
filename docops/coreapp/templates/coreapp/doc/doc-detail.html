@@ -6,88 +6,89 @@
 <link rel="stylesheet" href="{% static 'coreapp/css/style.css' %}">
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-{{form.media}}
+
 {% endblock %}
 {% block content %}
 <div class="main-container">
-    <div class="main">
-        <div class="container">
-            <div class="profile">
-              <div class="profile-image">
-                {% if doctor.pic %}
-                <img src="{{ doctor.pic.url }}"  alt="dp">
-                {% else %}
-                <img src="{% static 'hospital/img/default.png' %}"   alt="">
-                {% endif %}
-              </div>
-              <div class="profile-details">
-                <h2>{{ doctor.name }}</h2>
-                <p class="specialization">{{ doctor.specialization }}</p>
-                <p class="experience">Experience: {{ doctor.experience }} years</p>
-                <p class="qualifications">{{ doctor.qualifications }}</p>
-                <p class="contact">Contact: {{ doctor.contact_number }}</p>
-                <p class="email">Email: {{ doctor.email }}</p>
-                
-                <p class="availability">Availability: {% if doctor.is_available %}Available{% else %}Not Available{% endif %}</p>
-              </div>
-            </div>
-            <div class="height20"></div>
-            <div class="box-container">
-              <a href="{% url 'coreapp:booking' %}" class="btn">Book</a>
-              
-            </div>
-            
-          </div>  
+  <div class="main">
+    <div class="container">
+      <div class="profile">
+        <div class="profile-image">
+          {% if doctor.pic %}
+          <img src="{{ doctor.pic.url }}" alt="dp">
+          {% else %}
+          <img src="{% static 'hospital/img/default.png' %}" alt="">
+          {% endif %}
+        </div>
+        <div class="profile-details">
+          <h2>{{ doctor.name }}</h2>
+          <p class="specialization">{{ doctor.specialization }}</p>
+          <p class="experience">Experience: {{ doctor.experience }} years</p>
+          <p class="qualifications">{{ doctor.qualifications }}</p>
+          <p class="contact">Contact: {{ doctor.contact_number }}</p>
+          <p class="email">Email: {{ doctor.email }}</p>
+
+          <p class="availability">Availability: {% if doctor.is_available %}Available{% else %}Not Available{% endif %}
+          </p>
+        </div>
+
+      </div>
+      <div class="height20"></div>
+      <div class="box-container">
+        <a href="{% url 'coreapp:booking' %}" class="btn">Book</a>
+        <a href="{% url 'coreapp:add_review' %}" class="btn">Review</a>
+
+      </div>
+
     </div>
-    
+  </div>
+
 </div>
 <style>
-    .container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
 
-.profile {
-  display: flex;
-  align-items: center;
-  background-color: #f2f2f2;
-  border-radius: 5px;
-  padding: 20px;
-}
+  .profile {
+    display: flex;
+    align-items: center;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    padding: 20px;
+  }
 
-.profile-image {
-  flex: 0 0 150px;
-  margin-right: 20px;
-}
+  .profile-image {
+    flex: 0 0 150px;
+    margin-right: 20px;
+  }
 
-.profile-image img {
-  width: 100%;
-  border-radius: 50%;
-}
+  .profile-image img {
+    width: 100%;
+    border-radius: 50%;
+  }
 
-.profile-details {
-  flex: 1;
-}
+  .profile-details {
+    flex: 1;
+  }
 
-h2 {
-  margin: 0;
-}
+  h2 {
+    margin: 0;
+  }
 
-.specialization {
-  font-weight: bold;
-  margin-top: 10px;
-}
+  .specialization {
+    font-weight: bold;
+    margin-top: 10px;
+  }
 
-.experience,
-.qualifications,
-.contact,
-.email,
-.address,
-.availability {
-  margin: 5px 0;
-}
-
+  .experience,
+  .qualifications,
+  .contact,
+  .email,
+  .address,
+  .availability {
+    margin: 5px 0;
+  }
 </style>
 {% endblock %}

@@ -16,6 +16,8 @@ def home(request):
         
         context = {
             "user" : request.user,
+            
+            
         }
         if request.user.role=='HOSPITAL':
             return redirect(reverse('hospital:hospital'))
@@ -30,7 +32,6 @@ def AddProfile(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
         try:
             instance = request.user.patient
-            # print("hiiii "+request.user.patient)
             return redirect('coreapp:home')
         except ObjectDoesNotExist:
             form = AddPatientProfileForm()
@@ -55,6 +56,7 @@ def AddProfile(request):
             })
     else:
         return redirect('coreapp:home')
+    
 def EditProfile(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
         try:
@@ -145,11 +147,12 @@ def doc_search(request):
             
         }
     return render(request, 'coreapp/doc/doc-search.html',context)
+
 @login_required
 def DoctorProfile(request,doctor_id):
     doctor = Doctor.objects.get(id=doctor_id)
     context = {
-            "doctors":doctor,
+            "doctor":doctor,
                                                                 
         }
     return render(request, 'coreapp/doc/doc-detail.html',context)

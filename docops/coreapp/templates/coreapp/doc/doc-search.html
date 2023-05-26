@@ -85,8 +85,8 @@
 
         </div>
 
-        <div class="box-container">
-            <!-- <div class="card">
+        <!-- <div class="box-container">
+            <div class="card">
                 <img src="{% static 'coreapp/img/doc.jpg' %}" alt="John" style="width:100px;border-radius: 50%;">
                 <div class="height20"></div>
                 <h2 class="card-name">Dr. Mathew</h2>
@@ -102,6 +102,7 @@
                 <div class="height20"></div>
                 <a href="doc-profile.html" class="btn">View</a>
             </div> -->
+        <div class="box-container">
             {% for doctor in doctors %}
             <div class="card">
 
@@ -129,8 +130,8 @@
                 <a href="{% url 'coreapp:doctor_profile' doctor_id=doctor.id %}" class="btn">View</a>
             </div>
             {% endfor %}
-
         </div>
     </div>
+</div>
 </div>
 {% endblock %}

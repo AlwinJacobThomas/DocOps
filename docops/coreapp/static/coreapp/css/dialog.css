@@ -20,7 +20,7 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: flex-start;
     padding: 100px;
@@ -151,6 +151,7 @@ button:hover {
     padding: 60px;
     border-radius: 16px;
     position: relative;
+    display: none;
 }
 
 .btn-close {
@@ -180,5 +181,5 @@ input[type='time'] {
 }
 
 .show {
-    display: flex !important;
+    display: block !important;
 }

@@ -17,7 +17,12 @@ def hospital(request):
         if request.user.role == 'HOSPITAL':
             try:
                 hospital = request.user.hospital
-                return render(request, 'hospital/hospital.html')
+                doctors = Doctor.objects.filter(hospital=hospital.user)
+                print(doctors)
+                return render(request, 'hospital/hospital.html', {
+                    'hospital': hospital,
+                    'doctors': doctors
+                })
             except ObjectDoesNotExist:
                 return redirect(reverse('hospital:add_profile'))
         elif request.user.role == 'PATIENT':

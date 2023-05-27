@@ -76,12 +76,17 @@
             <div class="title">{{ user.hospital.address }}</div>
 
             {% if user.hospital.pic %}
-            <img src="{{ user.hospital.pic.url }}" class="dpicn" alt="dp">
+            <img src="{{ user.hospital.pic.url }}" class="dpicn" alt="dp" width="100px" height="100px">
             {% else %}
-            <img src="{% static 'hospital/img/default.png' %}" alt="">
+            <img src="{% static 'hospital/img/default.png' %}" alt="" width="100px" height="100px">
             {% endif %}
             <div class="height20"></div>
-            <a href="{% url 'hospital:doctor_list' %}">Doctors</a>
+            DOCTORS
+            <ul>
+                {% for i in doctors %}
+                {{i.name}}
+                {% endfor %}
+            </ul>
         </div>
 
 
@@ -89,11 +94,4 @@
     </div>
 
 </div>
-<style>
-    .container > img{
-        height: auto;
-        width:600px;
-    }
-
-</style>
 {% endblock %}

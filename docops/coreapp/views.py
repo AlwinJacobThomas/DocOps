@@ -7,6 +7,9 @@ from user.models import HospitalProfile
 from hospital.models import Doctor
 from .models import Appointment, AppointmentReview
 from django.http import HttpResponse
+from django.db.models import Avg
+# from docops.lstm2 import predict_star_rating, load_model, tokenizer
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 User = get_user_model()
@@ -172,9 +175,12 @@ def doc_search(request):
 @login_required
 def DoctorProfile(request,doctor_id):
     doctor = Doctor.objects.get(id=doctor_id)
+    reviews = AppointmentReview.objects.filter(appointment__doctor=doctor)
+    rating = reviews.aggregate(avg_rating=Avg('doctor_rating'))['avg_rating']
     context = {
             "doctor":doctor,
-                                                                
+            "reviews": reviews,
+            "rating": rating                          
         }
     return render(request, 'coreapp/doc/doc-detail.html',context)
 
@@ -259,15 +265,20 @@ def TreatmentReviewView(request, appointment_id):
     reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=request.user.patient.user)
     if appointment.appointment_status == 'completed' and appointment not in reviewed_appointments:
         if request.method == 'POST':
+            # model, tokenizer = load_model()
+
             hos_review = request.POST.get('hos_review')
             doc_review = request.POST.get('doc_review')
 
             appointmentReview = AppointmentReview(
                 hospital_review = hos_review,
+                # hospital_rating = float(predict_star_rating(hos_review, model, tokenizer)*5),
                 doctor_review = doc_review,
+                # doctor_rating = float(predict_star_rating(doc_review, model, tokenizer)*5),
                 appointment = appointment
             )
             appointmentReview.save()
+            # print(predict_star_rating(doc_review,model,tokenizer)*5)
             return redirect(reverse('coreapp:doctor_detail', kwargs={'doctor_id': appointment.doctor.id}))
         return render(request, 'coreapp/treatment_review.html', {
             'appointment_id': appointment_id,
@@ -275,3 +286,42 @@ def TreatmentReviewView(request, appointment_id):
         })
     else:
         return HttpResponse("Error", status=401)
+
+@login_required
+def HosProfile(request, hospital_id):
+    appointments = Appointment.objects.filter(hospital=request.user)
+
+    cancelled_appoinments = appointments.filter(appointment_status='cancelled')
+    completed_appoinments = appointments.filter(appointment_status='completed')
+    pending_appoinments = appointments.filter(appointment_status='pending')
+    return render(request, 'coreapp/hos_profile.html', {
+        'cancelled_appointments': cancelled_appoinments,
+        'completed_appointments': completed_appoinments,
+        'pending_appointments': pending_appoinments
+    })
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Appointment
+
+@login_required
+def AppointmentConfirm(request, appointment_id):
+    try:
+        appointment = Appointment.objects.get(id=appointment_id)
+        
+        if request.method == 'POST' and request.POST.get('_method') != 'DELETE':
+            appointment.appointment_status = 'completed'
+            appointment.save()
+            return HttpResponse("Appointment marked as completed.")
+        
+        if request.method == 'POST' and request.POST.get('_method') == 'DELETE':
+            appointment.appointment_status = 'cancelled'
+            appointment.save()
+            return HttpResponse("Appointment cancelled.")
+
+    except ObjectDoesNotExist:
+        return HttpResponse("Appointment not found.")
+    
+    return HttpResponse("Invalid request.")

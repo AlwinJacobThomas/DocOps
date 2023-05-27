@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% if appointments|length == 0 %}
+    No appointments
+    {% endif %}
+    {% for i in appointments %}
+    {{i.hospital}}
+    <form action="{% url 'coreapp:appointment_confirm' appointment_id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Mark Completed</button>
+    </form>
+    <form action="{% url 'coreapp:appointment_confirm' appointment_id %}" method="delete">
+        {% csrf_token %}
+        <button type="submit">Cancel</button>
+    </form>
+    {% endfor %}
+</body>
+</html>

@@ -8,13 +8,12 @@ from hospital.models import Doctor
 from .models import Appointment, AppointmentReview
 from django.http import HttpResponse
 from django.db.models import Avg
-# from docops.lstm2 import predict_star_rating, load_model, tokenizer
+from docops.lstm2 import predict_star_rating, load_model, tokenizer
 from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 User = get_user_model()
 
-@login_required
 def home(request):
     if request.user.is_authenticated:
         if request.user.role=='HOSPITAL':
@@ -265,16 +264,16 @@ def TreatmentReviewView(request, appointment_id):
     reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=request.user.patient.user)
     if appointment.appointment_status == 'completed' and appointment not in reviewed_appointments:
         if request.method == 'POST':
-            # model, tokenizer = load_model()
+            model, tokenizer = load_model()
 
             hos_review = request.POST.get('hos_review')
             doc_review = request.POST.get('doc_review')
 
             appointmentReview = AppointmentReview(
                 hospital_review = hos_review,
-                # hospital_rating = float(predict_star_rating(hos_review, model, tokenizer)*5),
+                hospital_rating = float(predict_star_rating(hos_review, model, tokenizer)*5),
                 doctor_review = doc_review,
-                # doctor_rating = float(predict_star_rating(doc_review, model, tokenizer)*5),
+                doctor_rating = float(predict_star_rating(doc_review, model, tokenizer)*5),
                 appointment = appointment
             )
             appointmentReview.save()
@@ -299,12 +298,6 @@ def HosProfile(request, hospital_id):
         'completed_appointments': completed_appoinments,
         'pending_appointments': pending_appoinments
     })
-
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import Appointment
 
 @login_required
 def AppointmentConfirm(request, appointment_id):

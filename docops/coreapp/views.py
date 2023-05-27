@@ -14,7 +14,6 @@ from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 User = get_user_model()
 
-@login_required
 def home(request):
     if request.user.is_authenticated:
         if request.user.role=='HOSPITAL':

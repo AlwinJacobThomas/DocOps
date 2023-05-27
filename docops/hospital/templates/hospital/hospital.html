@@ -76,17 +76,13 @@
             <div class="title">{{ user.hospital.address }}</div>
 
             {% if user.hospital.pic %}
-            <img src="{{ user.hospital.pic.url }}" class="dpicn" alt="dp" width="100px" height="100px">
+            <img src="{{ user.hospital.pic.url }}" class="dpicn" alt="dp" width="100%" >
             {% else %}
             <img src="{% static 'hospital/img/default.png' %}" alt="" width="100px" height="100px">
             {% endif %}
             <div class="height20"></div>
-            DOCTORS
-            <ul>
-                {% for i in doctors %}
-                {{i.name}}
-                {% endfor %}
-            </ul>
+    
+            <a href="{% url 'hospital:doctor_list' %}">Doctors Page</a>
         </div>
 
 

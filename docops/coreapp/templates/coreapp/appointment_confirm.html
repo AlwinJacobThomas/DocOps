@@ -18,7 +18,7 @@
     </form>
     <form action="{% url 'coreapp:appointment_confirm' appointment_id %}" method="delete">
         {% csrf_token %}
-        <button type="submit">Cancel</button>
+        <button type="submit">Cancel Appointment</button>
     </form>
     {% endfor %}
 </body>

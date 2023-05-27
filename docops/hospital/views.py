@@ -7,7 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from .forms import DoctorForm
 from django.http import Http404
-
+from coreapp.models import Appointment,AppointmentReview
+from django.http import HttpResponse
 
 User = get_user_model()
 
@@ -157,10 +158,42 @@ def DoctorProfile(request, doctor_id):
 
     return render(request, 'hospital/doctor-profile.html', context)
 
+@login_required
+def HosAppointmentsView(request):
+    appointments = Appointment.objects.filter(hospital=request.user)
 
-def DoctorList(request):
+    cancelled_appoinments = appointments.filter(appointment_status='cancelled')
+    completed_appoinments = appointments.filter(appointment_status='completed')
+    pending_appoinments = appointments.filter(appointment_status='pending')
+    return render(request, 'hospital/hos_appointments.html', {
+        'cancelled_appointments': cancelled_appoinments,
+        'completed_appointments': completed_appoinments,
+        'pending_appointments': pending_appoinments
+    })
+
+@login_required
+def HosAppointmentConfirmView(request, appointment_id):
+    try:
+        appointment = Appointment.objects.get(id=appointment_id)
+        
+        if request.method == 'POST' and request.POST.get('_method') != 'DELETE':
+            appointment.appointment_status = 'completed'
+            appointment.save()
+            return HttpResponse("Appointment marked as completed.")
+        
+        if request.method == 'POST' and request.POST.get('_method') == 'DELETE':
+            appointment.appointment_status = 'cancelled'
+            appointment.save()
+            return HttpResponse("Appointment cancelled.")
+
+    except ObjectDoesNotExist:
+        return HttpResponse("Appointment not found.")
+    
+    return HttpResponse("Invalid request.")
+
+def HosDoctorsView(request):
     doctor = Doctor.objects.all().filter(hospital=request.user)
     context = {
         "doctors": doctor
     }
-    return render(request, 'hospital/doctor-list.html', context)
+    return render(request, 'hospital/hos_doctors.html', context)

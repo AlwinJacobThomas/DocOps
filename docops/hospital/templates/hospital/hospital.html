@@ -76,12 +76,21 @@
             <div class="title">{{ user.hospital.address }}</div>
 
             {% if user.hospital.pic %}
+<<<<<<< HEAD
             <img src="{{ user.hospital.pic.url }}" class="dpicn" alt="dp">
+=======
+            <img src="{{ user.hospital.pic.url }}" class="dpicn" alt="dp" width="100%" >
+>>>>>>> ca8cc3a95cf8330d09dd2f5f51d86abb400c820c
             {% else %}
             <img src="{% static 'hospital/img/default.png' %}" alt="">
             {% endif %}
             <div class="height20"></div>
+<<<<<<< HEAD
             Doctors
+=======
+    
+            <a href="{% url 'hospital:doctor_list' %}">Doctors Page</a>
+>>>>>>> ca8cc3a95cf8330d09dd2f5f51d86abb400c820c
         </div>
 
 

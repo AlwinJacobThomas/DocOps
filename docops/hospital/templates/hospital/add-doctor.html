@@ -10,7 +10,7 @@
 
 {% block dialog %}
 <div id="modal_wrapper">
-    <form id="regForm" method="post" action="">
+    <form id="regForm" method="post" action="{% url 'hospital:add_doctor' %}" enctype="multipart/form-data">
         {% csrf_token %}
         <a class="btn-close" id="btn-close" href="{% url 'hospital:hos_doctors' %}">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,37 +27,36 @@
         <div class="tab">
             <label>Name</label>
             <div class="gap-16"></div>
-            <p><input type="text" name="name" class="form-field" /></p>
+            <p><input type="text" name="name" class="form-field" required /></p>
             <div class="gap-16"></div>
             <label>Specialization</label>
             <div class="gap-16"></div>
-            <p><input type="text" name="specialization" class="form-field" /></p>
+            <p><input type="text" name="specialization" class="form-field" required /></p>
         </div>
         <div class="tab">
             <label>Experience</label>
             <div class="gap-16"></div>
-            <p><input type="number" name="experience" class="form-field" /></p>
+            <p><input type="number" name="experience" class="form-field" required /></p>
             <div class="gap-16"></div>
             <label>Qualifications</label>
             <div class="gap-16"></div>
-            <p><textarea name="qualifications" class="form-field"></textarea></p>
+            <p><textarea name="qualifications" class="form-field" required></textarea></p>
         </div>
         <div class="tab">
             <label>Phone</label>
             <div class="gap-16"></div>
-            <p><input type="number" name="contact_number" class="form-field" /></p>
+            <p><input type="number" name="contact_number" class="form-field" required /></p>
             <div class="gap-16"></div>
             <label>Email</label>
             <div class="gap-16"></div>
-            <p><input type="email" name="email" class="form-field" /></p>
+            <p><input type="email" name="email" class="form-field" required /></p>
         </div>
         <div class="tab">
-            <label>Pic</label>
-            <div class="gap-16"></div>
+            <label>Upload Pic</label>
             <p class="container">
                 <div class="avatar-upload">
                     <div class="avatar-edit">
-                        <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
+                        <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" name="pic" />
                         <label for="imageUpload"></label>
                     </div>
                     <div class="avatar-preview">

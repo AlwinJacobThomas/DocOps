@@ -90,28 +90,30 @@ def EditProfile(request):
         except ObjectDoesNotExist:
             return redirect('coreapp:home')
 
-
 def AddDoctor(request):
     if request.user.is_authenticated and request.user.role == 'HOSPITAL':
-        
         try:
-            form = DoctorForm(request.POST, request.FILES)
             if request.method == "POST":
                 form = DoctorForm(request.POST, request.FILES)
                 if form.is_valid():
                     doctor = form.save(commit=False)
                     doctor.hospital = request.user.hospital.user
+                    if 'pic' in request.FILES:
+                        doctor.pic = request.FILES['pic']
                     doctor.save()
-                    return redirect(reverse('hospital:doctor_list'))
+                    return redirect(reverse('hospital:hos_doctors'))
                 else:
                     return render(request, 'hospital/add-doctor.html', {
                         'form': form,
                         'error': True,
+                        'doctors': Doctor.objects.filter(hospital=request.user)
                     })
 
+            form = DoctorForm()
             return render(request, 'hospital/add-doctor.html', {
                 'form': form,
                 'error': False,
+                'doctors': Doctor.objects.filter(hospital=request.user)
             })
         except ObjectDoesNotExist:
             return redirect('hospital:doctor_list')

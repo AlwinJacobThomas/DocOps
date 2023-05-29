@@ -7,8 +7,8 @@ from user.models import HospitalProfile
 from hospital.models import Doctor
 from .models import Appointment, AppointmentReview
 from django.http import HttpResponse
-from django.db.models import Avg
-# from docops.lstm2 import predict_star_rating, load_model, tokenizer
+from django.db.models import Avg,Sum
+from docops.lstm2 import predict_star_rating, load_model, tokenizer
 from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
@@ -175,11 +175,15 @@ def doc_search(request):
 def DoctorProfile(request,doctor_id):
     doctor = Doctor.objects.get(id=doctor_id)
     reviews = AppointmentReview.objects.filter(appointment__doctor=doctor)
-    rating = reviews.aggregate(avg_rating=Avg('doctor_rating'))['avg_rating']
+    # rating = reviews.aggregate(avg_rating=Avg('doctor_rating'))['avg_rating']
+    rating_sum = reviews.aggregate(sum_doctor_rating=Sum('doctor_rating'))['sum_doctor_rating']
+
+    print(rating_sum)
+
     context = {
             "doctor":doctor,
             "reviews": reviews,
-            "rating": rating                          
+            "rating": rating_sum                          
         }
     return render(request, 'coreapp/doc/doc-detail.html',context)
 
@@ -264,20 +268,19 @@ def TreatmentReviewView(request, appointment_id):
     reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=request.user.patient.user)
     if appointment.appointment_status == 'completed' and appointment not in reviewed_appointments:
         if request.method == 'POST':
-            # model, tokenizer = load_model()
+            model, tokenizer = load_model()
 
             hos_review = request.POST.get('hos_review')
             doc_review = request.POST.get('doc_review')
 
             appointmentReview = AppointmentReview(
                 hospital_review = hos_review,
-                # hospital_rating = float(predict_star_rating(hos_review, model, tokenizer)*5),
+                hospital_rating = float(predict_star_rating(hos_review, model, tokenizer)),
                 doctor_review = doc_review,
-                # doctor_rating = float(predict_star_rating(doc_review, model, tokenizer)*5),
+                doctor_rating = float(predict_star_rating(doc_review, model, tokenizer)),
                 appointment = appointment
             )
             appointmentReview.save()
-            # print(predict_star_rating(doc_review,model,tokenizer)*5)
             return redirect(reverse('coreapp:doctor_detail', kwargs={'doctor_id': appointment.doctor.id}))
         return render(request, 'coreapp/treatment_review.html', {
             'appointment_id': appointment_id,

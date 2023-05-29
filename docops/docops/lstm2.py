@@ -64,7 +64,7 @@ def predict_star_rating(new_review, model, tokenizer):
 
     # Make predictions
     predictions = model.predict(new_sequences)
-
+    print(f'==={predictions[0][0]}')
     # Return the predicted star rating
     return predictions[0][0]
 

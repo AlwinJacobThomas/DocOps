@@ -101,12 +101,9 @@
             </div> -->
             {% for hos in hospitals %}
             <div class="wide-card">
-<<<<<<< HEAD
-                <img src="{% static 'img/hospital.jpg' %}" alt="John"
-                    style="height: 150px;border-radius: 10px 0 0 10px ;">
-=======
+
                 <img src="{{ hos.pic.url}}" alt="John" style="height: 150px;border-radius: 10px 0 0 10px ;">
->>>>>>> 352fcbd7fce726ea0920bd50541a8d6831f75366
+
                 <div class="wide-card-details">
 
                     <h2 class="card-name">{{hos.hospital_name}}</h2>
@@ -120,7 +117,7 @@
                         <span class="fa fa-star"></span>
                     </div>
 
-                    <a href="hos-profile.html" class="btn">View</a>
+                    <a href="#" class="btn">View</a>
                 </div>
             </div>
             {% endfor %}

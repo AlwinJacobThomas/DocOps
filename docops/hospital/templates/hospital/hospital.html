@@ -22,7 +22,7 @@
                         Dashboard</a>
                 </li>
                 <li class="nav-options">
-                    <a class="nav-link" href="{% url 'coreapp:doc_search' %}">
+                    <a class="nav-link" href="#">
                         <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
                             text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
                             clip-rule="evenodd" viewBox="0 0 512 435.32">
@@ -32,7 +32,7 @@
                         Doctors</a>
                 </li>
                 <li class="nav-options">
-                    <a class="nav-link" href="{% url 'coreapp:hos_search' %}l">
+                    <a class="nav-link" href="#">
                         <?xml version="1.0" encoding="utf-8"?><svg class="nav-icon" version="1.1" id="Layer_1"
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
                             y="0px" viewBox="0 0 122.88 107.47" style="enable-background:new 0 0 122.88 107.47"
@@ -76,13 +76,13 @@
             <div class="title">{{ user.hospital.address }}</div>
 
             {% if user.hospital.pic %}
-            <img src="{{ user.hospital.pic.url }}" class="dpicn" alt="dp" width="100%" >
+            <img src="{{ user.hospital.pic.url }}"  alt="dp" width="100%" >
             {% else %}
-            <img src="{% static 'hospital/img/default.png' %}" alt="" width="100px" height="100px">
+            <img src="{% static 'hospital/img/default.png' %}" alt="" width="400px" height="">
             {% endif %}
             <div class="height20"></div>
     
-            <a href="{% url 'hospital:doctor_list' %}">Doctors Page</a>
+            <a href="{% url 'hospital:doctor_list' %}" class="btn">Doctors Page</a>
         </div>
 
 

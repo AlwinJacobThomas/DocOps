@@ -45,10 +45,12 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 model.fit(train_sequences, train_tags, epochs=5, validation_data=(test_sequences, test_tags))
 
 
-
+# Evaluate the model on the test set
+_, accuracy = model.evaluate(test_sequences, test_tags)
+print('Test Accuracy:', accuracy)
 
 # Define a new review
-new_review = "i am so satisfied.Great way of talking and good communication skill of the doctor"
+new_review = "the doctor is inexperienced and had bad impression"
 
 # Tokenize and pad the new review sequence
 new_sequences = tokenizer.texts_to_sequences([new_review])

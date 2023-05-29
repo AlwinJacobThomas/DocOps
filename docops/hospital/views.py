@@ -7,7 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from .forms import DoctorForm
 from django.http import Http404
-
+from coreapp.models import Appointment,AppointmentReview
+from django.http import HttpResponse
 
 User = get_user_model()
 
@@ -89,28 +90,30 @@ def EditProfile(request):
         except ObjectDoesNotExist:
             return redirect('coreapp:home')
 
-
 def AddDoctor(request):
     if request.user.is_authenticated and request.user.role == 'HOSPITAL':
-        
         try:
-            form = DoctorForm(request.POST, request.FILES)
             if request.method == "POST":
                 form = DoctorForm(request.POST, request.FILES)
                 if form.is_valid():
                     doctor = form.save(commit=False)
                     doctor.hospital = request.user.hospital.user
+                    if 'pic' in request.FILES:
+                        doctor.pic = request.FILES['pic']
                     doctor.save()
-                    return redirect(reverse('hospital:doctor_list'))
+                    return redirect(reverse('hospital:hos_doctors'))
                 else:
                     return render(request, 'hospital/add-doctor.html', {
                         'form': form,
                         'error': True,
+                        'doctors': Doctor.objects.filter(hospital=request.user)
                     })
 
+            form = DoctorForm()
             return render(request, 'hospital/add-doctor.html', {
                 'form': form,
                 'error': False,
+                'doctors': Doctor.objects.filter(hospital=request.user)
             })
         except ObjectDoesNotExist:
             return redirect('hospital:doctor_list')
@@ -157,10 +160,42 @@ def DoctorProfile(request, doctor_id):
 
     return render(request, 'hospital/doctor-profile.html', context)
 
+@login_required
+def HosAppointmentsView(request):
+    appointments = Appointment.objects.filter(hospital=request.user)
 
-def DoctorList(request):
+    cancelled_appoinments = appointments.filter(appointment_status='cancelled')
+    completed_appoinments = appointments.filter(appointment_status='completed')
+    pending_appoinments = appointments.filter(appointment_status='pending')
+    return render(request, 'hospital/hos_appointments.html', {
+        'cancelled_appointments': cancelled_appoinments,
+        'completed_appointments': completed_appoinments,
+        'pending_appointments': pending_appoinments
+    })
+
+@login_required
+def HosAppointmentConfirmView(request, appointment_id):
+    try:
+        appointment = Appointment.objects.get(id=appointment_id)
+        
+        if request.method == 'POST' and request.POST.get('_method') != 'DELETE':
+            appointment.appointment_status = 'completed'
+            appointment.save()
+            return HttpResponse("Appointment marked as completed.")
+        
+        if request.method == 'POST' and request.POST.get('_method') == 'DELETE':
+            appointment.appointment_status = 'cancelled'
+            appointment.save()
+            return HttpResponse("Appointment cancelled.")
+
+    except ObjectDoesNotExist:
+        return HttpResponse("Appointment not found.")
+    
+    return HttpResponse("Invalid request.")
+
+def HosDoctorsView(request):
     doctor = Doctor.objects.all().filter(hospital=request.user)
     context = {
         "doctors": doctor
     }
-    return render(request, 'hospital/doctor-list.html', context)
+    return render(request, 'hospital/hos_doctors.html', context)

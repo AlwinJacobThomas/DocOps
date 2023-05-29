@@ -102,7 +102,9 @@
             {% for hos in hospitals %}
             <div class="wide-card">
 
+
                 <img src="{{ hos.pic.url}}" alt="John" style="height: 150px;border-radius: 10px 0 0 10px ;">
+
 
                 <div class="wide-card-details">
 
@@ -117,7 +119,9 @@
                         <span class="fa fa-star"></span>
                     </div>
 
-                    <a href="#" class="btn">View</a>
+
+                    <a href="{% url 'coreapp:hos_profile' hos.hospital_id %}" class="btn">View</a>
+
                 </div>
             </div>
             {% endfor %}

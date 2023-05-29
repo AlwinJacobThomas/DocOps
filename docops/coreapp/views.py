@@ -302,12 +302,6 @@ def HosProfile(request, hospital_id):
         'pending_appointments': pending_appoinments
     })
 
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import Appointment
-
 @login_required
 def AppointmentConfirm(request, appointment_id):
     try:

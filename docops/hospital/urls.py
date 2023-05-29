@@ -13,5 +13,9 @@ urlpatterns =[
     path('edit_doctor/<int:doctor_id>',views.EditDoctor,name='edit_doctor'),
     path('delete_doctor/<int:doctor_id>',views.DeleteDoctor,name='delete_doctor'),
     
-    path('doctor_list',views.DoctorList,name='doctor_list'),
+    # path('doctor_list',views.DoctorList,name='doctor_list'),
+
+    path('hos_appointments/',views.HosAppointmentsView,name='hos_appointments'),
+    path('hos_appointments/<int:appointment_id>/confirm/',views.HosAppointmentConfirmView,name='hos_appointment_confirm'),
+    path('hos_doctors/',views.HosDoctorsView,name='hos_doctors'),
 ]

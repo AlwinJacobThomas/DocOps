@@ -20,7 +20,7 @@ def hospital(request):
                 hospital = request.user.hospital
                 doctors = Doctor.objects.filter(hospital=hospital.user)
                 print(doctors)
-                return render(request, 'hospital/hospital.html', {
+                return render(request, 'hospital/hos_doctors.html', {
                     'hospital': hospital,
                     'doctors': doctors
                 })
@@ -32,7 +32,7 @@ def hospital(request):
             return redirect('/admin/')
 
     else:
-        return render(request, 'hospital/landing.html')
+        return redirect('user:hossignup')
 
 
 @login_required

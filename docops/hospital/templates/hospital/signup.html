@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -14,8 +13,8 @@
 </head>
 
 <body>
-    <main>
-        <div class="content">
+    <main >
+        <div class="content" >
             <!-- style="background-image: url({% static 'hospital/img/doc.jpg' %}); background-size: cover;" -->
             <img src="{% static 'hospital/img/logo-blue.svg' %}" alt="" class="logo">
             <div class="heading">Let us help you easily find the best treatment for you.</div>
@@ -25,24 +24,19 @@
         </div>
         <div class="login-form">
             <div class="gap-36"></div>
-            <div class="heading">Sign In</div>
-            <div class="sub-heading">Login to your account to continue</div>
-            <form action="#" method="post">
-                {% csrf_token %}
-                {% if message %}
-                <span style="color: red">
-                    {{message}}
-                </span>
-                {% endif %}
-                <div class="gap-36"></div>
-                <div class="gap-36"></div>
-                <label for="email">Email</label>
-                {{form.username}}
-                <label for="password">Password</label>
-                {{form.password}}
-                <input type="submit" class="btn btn-primary" value="Sign In">
-            </form>
-            <p class="sub-heading">Don’t have an account? <a style="color:#007BFF" href="{% url 'user:hossignup' %}">Sign Up</a> </p>
+            <div class="heading">Get started</div>
+            <div class="sub-heading">Create your account now</div>
+            <div class="gap-36"></div>
+            <div class="gap-36"></div>
+            <label for="email">Email</label>
+            <input type="email" name="email" class="input-text">
+            <label for="password">Password</label>
+            <input type="password" name="password1" class="input-text">
+            <label for="password">Confirm Password</label>
+            <input type="password" name="password2" class="input-text">
+
+            <input type="submit" class="btn btn-primary" value="Sign Up" >
+            <p class="sub-heading">Have an account? <a style="color:#007BFF" href="#">Sign In</a> </p>
         </div>
     </main>
 </body>

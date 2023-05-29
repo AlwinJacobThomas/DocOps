@@ -19,7 +19,7 @@ def HosSignup(request):
                 login(request, user)
                 return redirect(reverse('hospital:add_profile'))
         else:
-            return render(request, 'user/hospital/hos_signup.html', {
+            return render(request, 'hospital/hospital/hos_signup.html', {
                 'form': form,
                 'error': True,
             })
@@ -54,7 +54,7 @@ def HosLogin(request):
         return render(request, 'user/hospital/hos_login.html', {'form':form})
 def HosLogout(request):
     logout(request)
-    return redirect('hospital:hospital')  
+    return redirect('user:hoslogin')  
 
 def Signup(request):
     form = SignupForm()

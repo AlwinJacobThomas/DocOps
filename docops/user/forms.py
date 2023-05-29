@@ -10,7 +10,7 @@ class SignupForm(UserCreationForm):
         widget=forms.EmailInput(
             attrs={
                 'class': 'input',
-                'placeholder': 'user@example.com'
+           
             })
     )
     password1 = forms.CharField(
@@ -18,7 +18,7 @@ class SignupForm(UserCreationForm):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'password',
-                'placeholder': 'password'
+           
             })
     )
     password2 = forms.CharField(
@@ -26,7 +26,7 @@ class SignupForm(UserCreationForm):
         widget=forms.PasswordInput(
             attrs={
                 "class": "password",
-                "placeholder": "confirm password"
+           
             })
     )
 
@@ -41,7 +41,7 @@ class LoginForm(AuthenticationForm):
         widget=forms.EmailInput(
             attrs={
                 'class': 'input',
-                'placeholder': 'user@example.com'
+              
             })
     )
     password = forms.CharField(
@@ -49,7 +49,7 @@ class LoginForm(AuthenticationForm):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'password',
-                'placeholder': 'password'
+             
             })
     )
 
@@ -58,66 +58,13 @@ class LoginForm(AuthenticationForm):
         fields = "__all__"
 
 
-# class ProfileForm(forms.ModelForm):
-#     first_name = forms.CharField(
-#         label='First Name',
-#         widget=forms.PasswordInput(
-#             attrs={
-#                 'class': 'text',
-#                 'placeholder': 'First Name'
-#             })
-
-#     )
-#     last_name = forms.CharField(
-#         label='Last Name',
-#         widget=forms.PasswordInput(
-#             attrs={
-#                 'class': 'text',
-#                 'placeholder': 'Last Name'
-#             })
-
-#     )
-#     address = forms.CharField(
-#         label='Address',
-#         widget=forms.TextInput(
-#             attrs={
-#                 'class': 'textarea',
-#                 'placeholder': 'Address'
-#             })
-
-#     )
-#     pic = forms.ImageField(
-#         label='Profile Picture',
-#         widget=forms.TextInput(
-#             attrs={
-#                 'class': 'pic_upload'
-#             })
-
-#     )
-
-
-#     gender = forms.CharField(
-#         label='Gender',
-#         widget=forms.TextInput(
-#             attrs={
-#                 'class': 'text'
-#             })
-
-#     )
-
-
-# class Meta:
-#     model = PatientProfile
-#     fields = "__all__"
-
-
 class HosSignupForm(UserCreationForm):
     email = forms.EmailField(
         label='Email',
         widget=forms.EmailInput(
             attrs={
                 'class': 'input',
-                'placeholder': 'user@example.com'
+               
             })
     )
     password1 = forms.CharField(
@@ -125,7 +72,7 @@ class HosSignupForm(UserCreationForm):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'password',
-                'placeholder': 'password'
+                
             })
     )
     password2 = forms.CharField(
@@ -133,7 +80,7 @@ class HosSignupForm(UserCreationForm):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'password2',
-                'placeholder': 'Confirm password'
+              
             })
 
     )
@@ -149,7 +96,7 @@ class HosLoginForm(AuthenticationForm):
         widget=forms.EmailInput(
             attrs={
                 'class': 'input',
-                'placeholder': 'user@example.com'
+               
             })
     )
     password = forms.CharField(
@@ -157,7 +104,7 @@ class HosLoginForm(AuthenticationForm):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'password',
-                'placeholder': 'password'
+          
             })
     )
 

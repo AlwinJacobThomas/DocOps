@@ -13,16 +13,19 @@ from django.http import HttpResponse
 User = get_user_model()
 
 
-def hospital(request):
+def hos_dashboard(request):
     if request.user.is_authenticated:
         if request.user.role == 'HOSPITAL':
             try:
                 hospital = request.user.hospital
                 doctors = Doctor.objects.filter(hospital=hospital.user)
-                print(doctors)
-                return render(request, 'hospital/hos_doctors.html', {
+                doctor_count= doctors.count() 
+                review_count = AppointmentReview.objects.filter(appointment__hospital=hospital.user).count()
+                return render(request, 'hospital/hos_dashboard.html', {
                     'hospital': hospital,
-                    'doctors': doctors
+                    'doctors': doctors,
+                    'review_count':review_count,
+                    'doctor_count':doctor_count
                 })
             except ObjectDoesNotExist:
                 return redirect(reverse('hospital:add_profile'))
@@ -52,7 +55,7 @@ def AddProfile(request):
                     if 'pic' in request.FILES:
                         post.pic = request.FILES['pic']
                     post.save()
-                    return redirect(reverse('hospital:hospital'))
+                    return redirect(reverse('hospital:hos_dashboard'))
                 else:
                     return render(request, 'hospital/add-profile.html', {
                         'form': form,
@@ -75,8 +78,10 @@ def EditProfile(request):
                 form = AddHospitalProfileForm(
                     request.POST, request.FILES, instance=instance)
                 if form.is_valid():
-                    form.save()
-                    return redirect(reverse('hospital:hospital'))
+                    post = form.save(commit=False)
+                    post.location = request.POST['location']
+                    post.save()
+                    return redirect(reverse('hospital:hos_dashboard'))
                 else:
                     return render(request, 'hospital/add-profile.html', {
                         'form': form,

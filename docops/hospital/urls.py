@@ -4,7 +4,7 @@ from . import views
 app_name = 'hospital'
 
 urlpatterns =[
-    path('',views.hospital,name='hospital'),
+    path('',views.hos_dashboard,name='hos_dashboard'),
     path('add_profile',views.AddProfile,name='add_profile'),
     path('edit_profile',views.EditProfile,name='edit_profile'),
     path('doctor_profile/<int:doctor_id>',views.DoctorProfile,name='doctor_profile'),

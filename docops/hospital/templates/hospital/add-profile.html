@@ -3,8 +3,7 @@
 
 {% block title %}Add Profile{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="{% static 'hospital/css/style.css' %}">
-<link rel="stylesheet" href="{% static 'hospital/css/edit_profile.css' %}">
+<link rel="stylesheet" href="{% static 'hospital/css/base.css' %}">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 {{form.media}}
@@ -12,7 +11,7 @@
 {% block content %}
 <div class="main-container">
     <div class="main">
-        <div class="heading">Add Profile</div>
+        <h1>Add Profile</h1>
 
         <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
             {% if error == True %}
@@ -28,8 +27,8 @@
 
             <div class="label">
                 <label for="hospital_name">Hospital Location:</label>
-                <input type="text" name="location" id="location">
-                <button onclick="getLocation()">Get Location</button>
+                <input type="text" name="location" id="locationInput">
+                <button type="button" onclick="getLocation()">Get Location</button>
             </div>
             <br>
             <p><label for="">Hospital Name:</label></p>
@@ -49,13 +48,20 @@
 </div>
 <script>
     function getLocation() {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            document.getElementById("location").value = position.coords.latitude + "," + position.coords.longitude;
-        }, function (error) {
-            console.log(error);
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var latitude = position.coords.latitude;
+          var longitude = position.coords.longitude;
+
+          var locationInput = document.getElementById('locationInput');
+          locationInput.value = latitude + ', ' + longitude;
+          console.log('Location:', latitude, longitude);
         });
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
     }
-</script>
+  </script>
 <style>
     form {
         max-width: 800px;

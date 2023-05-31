@@ -121,17 +121,24 @@ def AddDoctor(request):
                 'doctors': Doctor.objects.filter(hospital=request.user)
             })
         except ObjectDoesNotExist:
-            return redirect('hospital:doctor_list')
+            return redirect('hospital:hos_doctors')
         
 def EditDoctor(request, doctor_id):
     if request.user.is_authenticated and request.user.role == 'HOSPITAL':
         doctor = get_object_or_404(Doctor, id=doctor_id)
         form = DoctorForm(request.POST or None, request.FILES or None, instance=doctor)#populate with data in form for edit form
-       
+    
         if request.method == "POST":
+         
             if form.is_valid():
-                form.save()
-                return redirect(reverse('hospital:doctor_list'))
+           
+                doctor = form.save(commit=False)
+                doctor.hospital = request.user.hospital.user
+                if 'pic' in request.FILES:
+                    doctor.pic = request.FILES['pic']
+                doctor.save()
+                
+                return redirect(reverse('hospital:hos_doctors'))
             else:
                 return render(request, 'hospital/add-doctor.html', {
                     'form': form,
@@ -143,7 +150,7 @@ def EditDoctor(request, doctor_id):
             'error': False,
         })
     else:
-        return redirect('hospital:doctor_list')
+        return redirect('hospital:hos_doctors')
 def DeleteDoctor(request, doctor_id):
     if request.user.is_authenticated and request.user.role == 'HOSPITAL':
         doctor = Doctor.objects.get(id=doctor_id)
@@ -151,7 +158,7 @@ def DeleteDoctor(request, doctor_id):
         context ={
             "message":"sucessfully deleted"
         }
-        return redirect(reverse('hospital:doctor_list'))
+        return redirect(reverse('hospital:hos_doctors'))
        
          
 def DoctorProfile(request, doctor_id):

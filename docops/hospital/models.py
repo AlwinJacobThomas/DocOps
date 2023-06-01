@@ -1,8 +1,11 @@
 from django.db import models
-from user.models import User,Hospital,Patient
-import os,uuid
+from user.models import Hospital
+import os
+import uuid
 from django.utils.deconstruct import deconstructible
 # Create your models here.
+
+
 @deconstructible
 class PathAndRename(object):
 
@@ -16,7 +19,9 @@ class PathAndRename(object):
         # return the whole path to the file
         return os.path.join('hospital/', filename)
 
+
 path_and_rename = PathAndRename("doctor/")
+
 
 class Doctor(models.Model):
     name = models.CharField(max_length=255,)
@@ -25,10 +30,22 @@ class Doctor(models.Model):
     experience = models.PositiveIntegerField()
     contact_number = models.CharField(max_length=20)
     email = models.EmailField()
-    pic = models.ImageField('Patient_Profile_Pic',upload_to=path_and_rename, blank=True, null=True)
+    pic = models.ImageField('Patient_Profile_Pic',
+                            upload_to=path_and_rename, blank=True, null=True)
     is_available = models.BooleanField(default=True)
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE,related_name='doctor')
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='doctors')
 
     def __str__(self):
         return self.name
+
+
+class Facility(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
+    opening_time = models.TimeField(blank=True, null=True)
+    closing_time = models.TimeField(blank=True, null=True)
+    is_available = models.BooleanField(default=True)
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='facilities')
     
+    def __str__(self):
+        return self.name        

@@ -13,32 +13,31 @@
     <div class="main">
         <h1>Add Profile</h1>
 
-        <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <form id="profileForm" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
             {% if error == True %}
             <span style="color: red">{{form.errors}}</span>
             {% endif %}
+
+            <p><label for="">Hospital Name:</label></p>
+            <p>{{form.hospital_name}}</p>
+            <p><label for="">Address:</label></p>
+            <p>{{form.address}}</p>
 
             <div class="label">
                 <label for="hospital_name">Profile Picture:</label>
                 <input type="file" name="pic" id="pic">
             </div>
-
             <br>
-
             <div class="label">
                 <label for="hospital_name">Hospital Location:</label>
                 <input type="text" name="location" id="locationInput">
                 <button type="button" onclick="getLocation()">Get Location</button>
             </div>
             <br>
-            <p><label for="">Hospital Name:</label></p>
-            <p>{{form.hospital_name}}</p>
-            <p><label for="">Address:</label></p>
-            <p>{{form.address}}</p>
             <p><label for="">Website:</label></p>
             <p>{{form.website}}</p>
-            <p><label for="">Phone:</label></p>
-            <p>{{form.phone}}</p>
+            <p><label for="id_phone">Phone:</label></p>
+            <p id="id_phone">{{form.phone}}</p>
             <br>
             <p><button type="submit" class="btn">Save Changes</button></p>
 
@@ -48,20 +47,33 @@
 </div>
 <script>
     function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          var latitude = position.coords.latitude;
-          var longitude = position.coords.longitude;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
 
-          var locationInput = document.getElementById('locationInput');
-          locationInput.value = latitude + ', ' + longitude;
-          console.log('Location:', latitude, longitude);
-        });
-      } else {
-        alert('Geolocation is not supported by this browser.');
-      }
+                var locationInput = document.getElementById('locationInput');
+                locationInput.value = latitude + ', ' + longitude;
+                console.log('Location:', latitude, longitude);
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
     }
-  </script>
+
+    // Frontend validation for the phone field
+    document.getElementById('profileForm').addEventListener('submit', function (event) {
+        var phoneInput = document.getElementById('id_phone');
+        var phonePattern = /^\d{10}$/;
+
+        if (phoneInput.value.length !== 10 || !phonePattern.test(phoneInput.value)) {
+            event.preventDefault(); // Prevent form submission
+            alert('Enter a valid 10-digit phone number.');
+            phoneInput.focus();
+        }
+    });
+
+</script>
 <style>
     form {
         max-width: 800px;

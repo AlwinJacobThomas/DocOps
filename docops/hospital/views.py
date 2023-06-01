@@ -1,14 +1,15 @@
-from django.shortcuts import render, reverse, redirect,get_object_or_404
-from .forms import AddHospitalProfileForm
-from user.models import HospitalProfile
-from .models import Doctor
+from django.shortcuts import render, reverse, redirect, get_object_or_404
+from .forms import AddHospitalProfileForm,FacilityForm
+
+from .models import Doctor,Facility
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from .forms import DoctorForm
 from django.http import Http404
-from coreapp.models import Appointment,AppointmentReview
+from coreapp.models import Appointment, AppointmentReview
 from django.http import HttpResponse
+from django.contrib import messages
 
 User = get_user_model()
 
@@ -19,13 +20,16 @@ def hos_dashboard(request):
             try:
                 hospital = request.user.hospital
                 doctors = Doctor.objects.filter(hospital=hospital.user)
-                doctor_count= doctors.count() 
-                review_count = AppointmentReview.objects.filter(appointment__hospital=hospital.user).count()
+                doctor_count = doctors.count()
+                review_count = AppointmentReview.objects.filter(
+                    appointment__hospital=hospital.user).count()
+                facility = Facility.objects.all().filter(hospital=hospital.user)
                 return render(request, 'hospital/hos_dashboard.html', {
                     'hospital': hospital,
                     'doctors': doctors,
-                    'review_count':review_count,
-                    'doctor_count':doctor_count
+                    'review_count': review_count,
+                    'doctor_count': doctor_count,
+                    'facilities':facility
                 })
             except ObjectDoesNotExist:
                 return redirect(reverse('hospital:add_profile'))
@@ -95,6 +99,7 @@ def EditProfile(request):
         except ObjectDoesNotExist:
             return redirect('coreapp:home')
 
+
 def AddDoctor(request):
     if request.user.is_authenticated and request.user.role == 'HOSPITAL':
         try:
@@ -122,22 +127,25 @@ def AddDoctor(request):
             })
         except ObjectDoesNotExist:
             return redirect('hospital:hos_doctors')
-        
+
+
 def EditDoctor(request, doctor_id):
     if request.user.is_authenticated and request.user.role == 'HOSPITAL':
         doctor = get_object_or_404(Doctor, id=doctor_id)
-        form = DoctorForm(request.POST or None, request.FILES or None, instance=doctor)#populate with data in form for edit form
-    
+        # populate with data in form for edit form
+        form = DoctorForm(request.POST or None,
+                          request.FILES or None, instance=doctor)
+
         if request.method == "POST":
-         
+
             if form.is_valid():
-           
+
                 doctor = form.save(commit=False)
                 doctor.hospital = request.user.hospital.user
                 if 'pic' in request.FILES:
                     doctor.pic = request.FILES['pic']
                 doctor.save()
-                
+
                 return redirect(reverse('hospital:hos_doctors'))
             else:
                 return render(request, 'hospital/add-doctor.html', {
@@ -151,16 +159,18 @@ def EditDoctor(request, doctor_id):
         })
     else:
         return redirect('hospital:hos_doctors')
+
+
 def DeleteDoctor(request, doctor_id):
     if request.user.is_authenticated and request.user.role == 'HOSPITAL':
         doctor = Doctor.objects.get(id=doctor_id)
         doctor.delete()
-        context ={
-            "message":"sucessfully deleted"
+        context = {
+            "message": "sucessfully deleted"
         }
         return redirect(reverse('hospital:hos_doctors'))
-       
-         
+
+
 def DoctorProfile(request, doctor_id):
     try:
         doctor = Doctor.objects.get(id=doctor_id)
@@ -171,6 +181,7 @@ def DoctorProfile(request, doctor_id):
     }
 
     return render(request, 'hospital/doctor-profile.html', context)
+
 
 @login_required
 def HosAppointmentsView(request):
@@ -185,16 +196,17 @@ def HosAppointmentsView(request):
         'pending_appointments': pending_appoinments
     })
 
+
 @login_required
 def HosAppointmentConfirmView(request, appointment_id):
     try:
         appointment = Appointment.objects.get(id=appointment_id)
-        
+
         if request.method == 'POST' and request.POST.get('_method') != 'DELETE':
             appointment.appointment_status = 'completed'
             appointment.save()
             return HttpResponse("Appointment marked as completed.")
-        
+
         if request.method == 'POST' and request.POST.get('_method') == 'DELETE':
             appointment.appointment_status = 'cancelled'
             appointment.save()
@@ -202,8 +214,9 @@ def HosAppointmentConfirmView(request, appointment_id):
 
     except ObjectDoesNotExist:
         return HttpResponse("Appointment not found.")
-    
+
     return HttpResponse("Invalid request.")
+
 
 def HosDoctorsView(request):
     doctor = Doctor.objects.all().filter(hospital=request.user)
@@ -211,3 +224,24 @@ def HosDoctorsView(request):
         "doctors": doctor
     }
     return render(request, 'hospital/hos_doctors.html', context)
+
+
+def AddFacility(request):
+    form = FacilityForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            facility = form.save(commit=False)
+            facility.hospital = request.user.hospital.user
+            facility.save()
+            return redirect('hospital:hos_dashboard') 
+        else:
+            form = FacilityForm()
+    return render(request, 'hospital/add-facility.html', {'form':form})
+
+def DeleteFacility(request,facility_id):
+    facility = Facility.objects.get(id=facility_id)
+    facility.delete()
+    messages.success(request, "Successfully deleted")
+    return redirect(reverse('hospital:hos_dashboard'))
+
+

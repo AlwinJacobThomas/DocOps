@@ -175,10 +175,17 @@ def DeleteDoctor(request, doctor_id):
 def DoctorProfile(request, doctor_id):
     try:
         doctor = Doctor.objects.get(id=doctor_id)
+        appointment = Appointment.objects.filter(doctor=doctor)
+        reviews = AppointmentReview.objects.all()
+       
+
     except Doctor.DoesNotExist:
         raise Http404("Doctor does not exist.")
+    
     context = {
-        "doctor": doctor
+        "doctor": doctor,
+        "reviews":reviews,
+        'appointments':appointment
     }
 
     return render(request, 'hospital/doctor-profile.html', context)
@@ -206,7 +213,7 @@ def HosAppointmentConfirmView(request, appointment_id):
         if request.method == 'POST' and request.POST.get('_method') != 'DELETE':
             appointment.appointment_status = 'completed'
             appointment.save()
-            return HttpResponse("Appointment marked as completed.")
+            return redirect(reverse('hospital:hos_appointments'))
 
         if request.method == 'POST' and request.POST.get('_method') == 'DELETE':
             appointment.appointment_status = 'cancelled'

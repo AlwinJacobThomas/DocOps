@@ -3,7 +3,7 @@ from .forms import AddPatientProfileForm,AppointmentReviewForm, AppointmentBooki
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
-from user.models import HospitalProfile
+from user.models import HospitalProfile,PatientProfile
 from hospital.models import Doctor
 from .models import Appointment, AppointmentReview
 from django.http import HttpResponse
@@ -84,8 +84,8 @@ def p_dash(request):
         if request.user.role=='HOSPITAL':
             return redirect(reverse('hospital:hospital'))
         else:
-            reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=request.user.patient.user, appointment_status='completed')
-            not_reviewed_appointments = Appointment.objects.filter(appointment_status='completed').exclude(appointment_review__appointment__patient=request.user.patient.user)
+            reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user), appointment_status='completed')
+            not_reviewed_appointments = Appointment.objects.filter(appointment_status='completed').exclude(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
 
             completed = {
                 'reviewed_appointments': reviewed_appointments,
@@ -232,7 +232,7 @@ def AppointmentBookingView(request, doctor_id):
         if form.is_valid():
             appointment = form.save(commit=False)
             appointment.doctor = doctor
-            appointment.patient = request.user.patient.user
+            appointment.patient = PatientProfile.objects.get(user=request.user)
             appointment.hospital = doctor.hospital
             appointment.appointment_status = 'pending'
             appointment.save()
@@ -247,8 +247,8 @@ def AppointmentBookingView(request, doctor_id):
 
 @login_required
 def AppointmentsView(request):
-    reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=request.user.patient.user)
-    not_reviewed_appointments = Appointment.objects.exclude(appointment_review__appointment__patient=request.user.patient.user)
+    reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
+    not_reviewed_appointments = Appointment.objects.exclude(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
 
     completed = {
         'reviewed_appointments': reviewed_appointments,
@@ -265,7 +265,7 @@ def AppointmentsView(request):
 @login_required
 def TreatmentReviewView(request, appointment_id):
     appointment = Appointment.objects.get(id=appointment_id)
-    reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=request.user.patient.user)
+    reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
     if appointment.appointment_status == 'completed' and appointment not in reviewed_appointments:
         if request.method == 'POST':
             model, tokenizer = load_model()

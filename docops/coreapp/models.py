@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from user.models import Patient, HospitalProfile
+from user.models import PatientProfile, HospitalProfile
 from hospital.models import Doctor
 from django.core.validators import MinValueValidator
 
@@ -10,7 +10,7 @@ class Appointment(models.Model):
         ('pending', 'Pending'),
         ('completed', 'Completed'),
     )
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE ,related_name='p_appointment')
+    patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE ,related_name='p_appointment')
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='d_appointment' )
     hospital = models.ForeignKey(HospitalProfile, on_delete=models.CASCADE, related_name='h_appointment')
     appointment_date = models.DateField()

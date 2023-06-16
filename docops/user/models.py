@@ -190,6 +190,8 @@ class HospitalProfile(models.Model):
     website = models.CharField(max_length=150, blank=True)
     phone = models.CharField(max_length=12, null=True, blank=True)
     location = PlainLocationField(zoom=7, null=True, blank=True)
+   
+    
     
     pic = models.ImageField('Hospital_Profile_Pic',
                             upload_to=path_and_rename, blank=True, null=True)

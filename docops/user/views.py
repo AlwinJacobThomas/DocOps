@@ -31,7 +31,7 @@ def HosSignup(request):
 
 def HosLogin(request):
     if request.user.is_authenticated:
-        return redirect(reverse('hospital:hospital'))
+        return redirect(reverse('hospital:hos_dashboard'))
 
     if request.method == 'POST':
         username = request.POST['username']
@@ -40,7 +40,7 @@ def HosLogin(request):
  
         if user is not None:
             login(request,user)
-            return redirect(reverse('hospital:hospital'))
+            return redirect(reverse('hospital:hos_dashboard'))
         else:
             form = HosLoginForm()
             context = {

@@ -19,11 +19,12 @@ def hos_dashboard(request):
         if request.user.role == 'HOSPITAL':
             try:
                 hospital = request.user.hospital
-                doctors = Doctor.objects.filter(hospital=hospital.user)
+                print(f'----{hospital.hospital_name}')
+                doctors = Doctor.objects.filter(hospital=hospital)
                 doctor_count = doctors.count()
                 review_count = AppointmentReview.objects.filter(
-                    appointment__hospital=hospital.user).count()
-                facility = Facility.objects.all().filter(hospital=hospital.user)
+                    appointment__hospital=hospital).count()
+                facility = Facility.objects.all().filter(hospital=hospital)
                 return render(request, 'hospital/hos_dashboard.html', {
                     'hospital': hospital,
                     'doctors': doctors,
@@ -107,7 +108,7 @@ def AddDoctor(request):
                 form = DoctorForm(request.POST, request.FILES)
                 if form.is_valid():
                     doctor = form.save(commit=False)
-                    doctor.hospital = request.user.hospital.user
+                    doctor.hospital = request.user.hospital
                     if 'pic' in request.FILES:
                         doctor.pic = request.FILES['pic']
                     doctor.save()
@@ -116,14 +117,14 @@ def AddDoctor(request):
                     return render(request, 'hospital/add-doctor.html', {
                         'form': form,
                         'error': True,
-                        'doctors': Doctor.objects.filter(hospital=request.user)
+                        'doctors': Doctor.objects.filter(hospital=request.user.hospital)
                     })
 
             form = DoctorForm()
             return render(request, 'hospital/add-doctor.html', {
                 'form': form,
                 'error': False,
-                'doctors': Doctor.objects.filter(hospital=request.user)
+                'doctors': Doctor.objects.filter(hospital=request.user.hospital)
             })
         except ObjectDoesNotExist:
             return redirect('hospital:hos_doctors')
@@ -141,7 +142,7 @@ def EditDoctor(request, doctor_id):
             if form.is_valid():
 
                 doctor = form.save(commit=False)
-                doctor.hospital = request.user.hospital.user
+                doctor.hospital = request.user.hospital
                 if 'pic' in request.FILES:
                     doctor.pic = request.FILES['pic']
                 doctor.save()
@@ -185,7 +186,7 @@ def DoctorProfile(request, doctor_id):
 
 @login_required
 def HosAppointmentsView(request):
-    appointments = Appointment.objects.filter(hospital=request.user)
+    appointments = Appointment.objects.filter(hospital=request.user.hospital)
 
     cancelled_appoinments = appointments.filter(appointment_status='cancelled')
     completed_appoinments = appointments.filter(appointment_status='completed')
@@ -219,7 +220,7 @@ def HosAppointmentConfirmView(request, appointment_id):
 
 
 def HosDoctorsView(request):
-    doctor = Doctor.objects.all().filter(hospital=request.user)
+    doctor = Doctor.objects.all().filter(hospital=request.user.hospital)
     context = {
         "doctors": doctor
     }
@@ -231,7 +232,7 @@ def AddFacility(request):
     if request.method == 'POST':
         if form.is_valid():
             facility = form.save(commit=False)
-            facility.hospital = request.user.hospital.user
+            facility.hospital = request.user.hospital
             facility.save()
             return redirect('hospital:hos_dashboard') 
         else:

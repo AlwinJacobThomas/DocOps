@@ -1,5 +1,5 @@
 from django.db import models
-from user.models import Hospital
+from user.models import HospitalProfile
 import os
 import uuid
 from django.utils.deconstruct import deconstructible
@@ -33,7 +33,7 @@ class Doctor(models.Model):
     pic = models.ImageField('Patient_Profile_Pic',
                             upload_to=path_and_rename, blank=True, null=True)
     is_available = models.BooleanField(default=True)
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='doctors')
+    hospital = models.ForeignKey(HospitalProfile,on_delete=models.CASCADE,related_name='doctor')
 
     def __str__(self):
         return self.name
@@ -45,7 +45,7 @@ class Facility(models.Model):
     opening_time = models.TimeField(blank=True, null=True)
     closing_time = models.TimeField(blank=True, null=True)
     is_available = models.BooleanField(default=True)
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='facilities')
+    hospital = models.ForeignKey(HospitalProfile,on_delete=models.CASCADE,related_name='facility')
     
     def __str__(self):
         return self.name        

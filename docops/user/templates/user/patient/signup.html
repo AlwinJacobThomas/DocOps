@@ -6,13 +6,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocOps | {% block title %}{% endblock %}</title>
+    <title>DocOps | {% block title %}Signup{% endblock %}</title>
 
     <link rel="shortcut icon" href="{% static 'hospital/img/logo.png' %}" type="image/x-icon">
     {% block head %}{% endblock %}
 </head>
 {% block content %}
 <body>
+
     <main>
         <div class="content">
             <!-- style="background-image: url({% static 'hospital/img/doc.jpg' %}); background-size: cover;" -->
@@ -44,7 +45,7 @@
                 
                 <input type="submit" class="btn btn-primary" value="Sign Up">
             </form>
-            <p class="sub-heading">Have an account? <a style="color:#007BFF" href="{% url 'user:hoslogin' %}">Sign In</a> </p>
+            <p class="sub-heading">Have an account? <a style="color:#007BFF" href="{% url 'user:login' %}">Sign In</a> </p>
         </div>
     </main>
 </body>

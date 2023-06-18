@@ -236,6 +236,7 @@ def HosDoctorsView(request):
 
 def AddFacility(request):
     form = FacilityForm(request.POST)
+    
     if request.method == 'POST':
         if form.is_valid():
             facility = form.save(commit=False)

@@ -1,29 +1,34 @@
-from django.shortcuts import render,redirect,reverse
-from .forms import AddPatientProfileForm,AppointmentReviewForm, AppointmentBookingForm
+from django.shortcuts import render,redirect,reverse, get_object_or_404
+from .forms import AddPatientProfileForm,AppointmentReviewForm, AppointmentBookingForm,MedicalForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from user.models import HospitalProfile,PatientProfile
 from hospital.models import Doctor
-from .models import Appointment, AppointmentReview
+from .models import Appointment, AppointmentReview,Medical
 from django.http import HttpResponse
 from django.db.models import Avg,Sum
 from docops.lstm2 import predict_star_rating, load_model, tokenizer
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.contrib import messages
 # Create your views here.
 User = get_user_model()
 
 def home(request):
     if request.user.is_authenticated:
         if request.user.role=='HOSPITAL':
-            return redirect(reverse('hospital:hospital'))
+            return redirect(reverse('hospital:hos_dashboard'))
         else:
-            return render(request, 'coreapp/u-dash.html', {
+            user = request.user
+            medical = get_object_or_404(Medical, user=user.patient)
+            context = {
                 'pending': Appointment.objects.filter(appointment_status='pending').order_by('-id'),
-            })
+                'user':user,
+                'medical':medical
+            }
+            return render(request, 'coreapp/patient/dashboard.html',context)
     else:
-        return render(request, 'coreapp/landing.html')
+        return redirect(reverse('user:signup'))
 
 @login_required
 def AddProfile(request):
@@ -35,12 +40,16 @@ def AddProfile(request):
             form = AddPatientProfileForm()
             if request.method == "POST":
                 form = AddPatientProfileForm(request.POST, request.FILES)
+                
+                
                 if form.is_valid():
                     post=form.save(commit=False)
                     post.user = User.objects.get(id=request.user.id)
+
                     if 'pic' in request.FILES:
                         post.pic = request.FILES['pic']
                     post.save() 
+                    Medical.objects.create(user=request.user.profile, blood_type='', allergies='', chronic_conditions='', medication='')
                     
                     return redirect(reverse('coreapp:home'))
                 else:
@@ -265,6 +274,7 @@ def AppointmentsView(request):
 @login_required
 def TreatmentReviewView(request, appointment_id):
     appointment = Appointment.objects.get(id=appointment_id)
+    
     reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
     if appointment.appointment_status == 'completed' and appointment not in reviewed_appointments:
         if request.method == 'POST':
@@ -321,3 +331,23 @@ def AppointmentConfirm(request, appointment_id):
         return HttpResponse("Appointment not found.")
     
     return HttpResponse("Invalid request.")
+
+def AddMedical(request):
+    try:
+        medical = get_object_or_404(Medical, user=request.user.patient)
+        
+    except ObjectDoesNotExist:
+        medical = None
+    form = MedicalForm(instance=medical)    
+    if request.method == 'POST':
+        form = MedicalForm(request.POST,instance=medical)
+        print("asdasdad")
+        if form.is_valid():
+            a = form.save(commit=False)
+            print("------")
+            a.user = request.user.patient
+            a.save()
+            return redirect('coreapp:home') 
+        else:
+            form = MedicalForm()
+    return render(request, 'coreapp/patient/add-medical.html', {'form':form,"medical":medical})

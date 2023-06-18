@@ -21,6 +21,8 @@ urlpatterns =[
     path('doctor/<int:doctor_id>/review/', views.AddReview, name='add_review'),
     path('doctor_booking/<int:doctor_id>',views.doctor_booking,name='doctor_booking'),
 
+    path('add_medical/',views.AddMedical,name='add_medical'),
+    
     path('doctor/<int:doctor_id>/', views.DoctorDetailView, name='doctor_detail'),
     path('doctor/<int:doctor_id>/appointment_booking/', views.AppointmentBookingView, name='appointment_booking'),
     path('appointments/', views.AppointmentsView, name='appointments'),

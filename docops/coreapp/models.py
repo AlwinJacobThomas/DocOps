@@ -28,5 +28,22 @@ class AppointmentReview(models.Model):
     hospital_review = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # def __str__(self):
-    #     return self.id
+    def __str__(self):
+        return self.id
+
+class Medical(models.Model):
+    BLOOD_TYPE_CHOICES = [
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+    ]
+    user = models.OneToOneField(PatientProfile,on_delete=models.CASCADE,related_name="medical",)
+    blood_type = models.CharField(null=True,blank=True,choices=BLOOD_TYPE_CHOICES,max_length=255)
+    allergies = models.CharField(null=True,blank=True,max_length=100)
+    chronic_conditions = models.CharField(null=True,blank=True,max_length=100)
+    medication = models.CharField(null=True,blank=True,max_length=100)

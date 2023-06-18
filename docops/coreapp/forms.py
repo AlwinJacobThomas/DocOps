@@ -1,7 +1,7 @@
 from django import forms
 from user.models import Patient, Hospital, PatientProfile, HospitalProfile
 from hospital.models import Doctor
-from .models import Appointment, AppointmentReview
+from .models import Appointment, AppointmentReview,Medical
 
 class AddPatientProfileForm(forms.ModelForm):
     first_name = forms.CharField(
@@ -69,3 +69,15 @@ class AppointmentBookingForm(forms.ModelForm):
     class Meta:
         model = Appointment
         fields = ['appointment_date', 'appointment_time']
+
+class MedicalForm(forms.ModelForm):
+    class Meta:
+        model = Medical
+        exclude = ['user']
+        widgets = {
+            'blood_type': forms.Select(attrs={'class': 'form-select-field'}),
+            'allergies': forms.TextInput(attrs={'class': 'form-field'}),
+            'chronic_conditions': forms.TextInput(attrs={'class': 'form-field'}),
+            'medication': forms.TextInput(attrs={'class': 'form-field'}),
+            
+        }

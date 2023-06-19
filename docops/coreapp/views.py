@@ -1,143 +1,116 @@
-from django.shortcuts import render,redirect,reverse, get_object_or_404
-from .forms import AddPatientProfileForm,AppointmentReviewForm, AppointmentBookingForm,MedicalForm
+from django.shortcuts import render, redirect, reverse, get_object_or_404
+from .forms import AddPatientProfileForm, AppointmentReviewForm, AppointmentBookingForm, MedicalForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
-from user.models import HospitalProfile,PatientProfile
+from user.models import HospitalProfile, PatientProfile
 from hospital.models import Doctor
-from .models import Appointment, AppointmentReview,Medical
+from .models import Appointment, AppointmentReview, Medical
 from django.http import HttpResponse
-from django.db.models import Avg,Sum
+from django.db.models import Avg, Sum
 from docops.lstm2 import predict_star_rating, load_model, tokenizer
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
+from django.http import Http404
+
 # Create your views here.
 User = get_user_model()
 
+
 def home(request):
     if request.user.is_authenticated:
-        if request.user.role=='HOSPITAL':
+        if request.user.role == 'HOSPITAL':
             return redirect(reverse('hospital:hos_dashboard'))
         else:
             user = request.user
-            medical = get_object_or_404(Medical, user=user.patient)
+           # medical = get_object_or_404(Medical, user=user.patient)
             context = {
                 'pending': Appointment.objects.filter(appointment_status='pending').order_by('-id'),
-                'user':user,
-                'medical':medical
+                'user': user,
+                # 'medical': medical
             }
-            return render(request, 'coreapp/patient/dashboard.html',context)
+            return render(request, 'coreapp/patient/dashboard.html', context)
     else:
         return redirect(reverse('user:signup'))
+
 
 @login_required
 def AddProfile(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
-        try:
-            instance = request.user.patient
-            return redirect('coreapp:home')
-        except ObjectDoesNotExist:
             form = AddPatientProfileForm()
             if request.method == "POST":
                 form = AddPatientProfileForm(request.POST, request.FILES)
-                
-                
                 if form.is_valid():
-                    post=form.save(commit=False)
+                    post = form.save(commit=False)
                     post.user = User.objects.get(id=request.user.id)
 
                     if 'pic' in request.FILES:
                         post.pic = request.FILES['pic']
-                    post.save() 
-                    Medical.objects.create(user=request.user.profile, blood_type='', allergies='', chronic_conditions='', medication='')
+                    post.save()
                     
+                    Medical.objects.create(user =request.user.patient)
+                    
+                   
                     return redirect(reverse('coreapp:home'))
-                else:
-                    return render(request, 'coreapp/add-profile.html', {
-                        'form': form,
-                        'error': True,
-                    })
-            return render(request,'coreapp/add-profile.html',{
+            return render(request,'coreapp/patient/add-profile.html',{
                 'form': form,
                 'error': False
             })
     else:
         return redirect('coreapp:home')
     
+# def EditProfile(request):
+#     if request.user.is_authenticated and request.user.role == 'PATIENT':
+#         try:
+#             instance = request.user.patient
+#             if request.method == "POST":
+#                 form = AddPatientProfileForm(request.POST, request.FILES, instance=instance)
+#                 if form.is_valid():
+#                     profile = form.save(commit=False)
+#                     if 'pic' in request.FILES:
+#                         profile.pic = request.FILES['pic']
+#                     profile.save()
+#                     return redirect(reverse('coreapp:home'))
+#             else:
+#                 form = AddPatientProfileForm(instance=instance)
+
+#             return render(request, 'coreapp/patient/add-profile.html', {
+#                 'form': form,
+#                 'error': False,
+#             })
+#         except ObjectDoesNotExist:
+#             return redirect('coreapp:home')
+#     else:
+#         return redirect('coreapp:home')  
+    
 def EditProfile(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
-        try:
-            instance = request.user.patient
-            form = AddPatientProfileForm(instance=instance)
-            if request.method == "POST":
-                form = AddPatientProfileForm(request.POST, request.FILES, instance=instance)
-                if form.is_valid():
-                    form.save()
-                    return redirect(reverse('coreapp:home'))
-                else:
-                    return render(request, 'coreapp/add-profile.html', {
-                        'form': form,
-                        'error': True,
-                    })
-            
-            return render(request,'coreapp/add-profile.html',{
-                'form': form,
-                'error': False,
-            })
-        except ObjectDoesNotExist:   
-            return redirect('coreapp:home')   
         
-@login_required
-def p_dash(request):
-    if request.user.is_authenticated:
-        if request.user.role=='HOSPITAL':
-            return redirect(reverse('hospital:hospital'))
-        else:
-            reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user), appointment_status='completed')
-            not_reviewed_appointments = Appointment.objects.filter(appointment_status='completed').exclude(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
+        instance = get_object_or_404(PatientProfile, patient_id=request.user.patient.patient_id)
+        # populate with data in form for edit form
+        form = AddPatientProfileForm(request.POST or None,
+                          request.FILES or None, instance=instance)
+        if request.method == "POST":
 
-            completed = {
-                'reviewed_appointments': reviewed_appointments,
-                'not_reviewed_appointments': not_reviewed_appointments
-            }
-            return render(request, 'coreapp/p-dash.html', {
-                'completed': completed,
-            })
+            if form.is_valid():
+
+                post = form.save(commit=False)
+                if 'pic' in request.FILES:
+                    post.pic = request.FILES.get('pic')
+                    print(f'----{post.pic.url}')
+                post.save()
+
+                return redirect(reverse('coreapp:home'))
+            else:
+                form = AddPatientProfileForm(instance=instance)
+
+        return render(request, 'coreapp/patient/add-profile.html', {
+            'form': form,
+            'error': False,
+        })
     else:
-        return render(request, 'coreapp/landing.html')
-
-@login_required
-def c_dash(request):
-    if request.user.is_authenticated:
-        if request.user.role=='HOSPITAL':
-            return redirect(reverse('hospital:hospital'))
-        else:
-            return render(request, 'coreapp/c-dash.html', {
-                'cancelled': Appointment.objects.filter(appointment_status='cancelled').order_by('-id')
-            })
-    else:
-        return render(request, 'coreapp/landing.html')
-
-@login_required
-def profile(request):
-    if request.user.is_authenticated and request.user.role == 'PATIENT':
-        context = {
-            "user":request.user,
-        }
-    return render(request, 'coreapp/profile.html',context)
-@login_required
-def edit_profile(request):
-    return render(request, 'coreapp/edit-profile.html')
-
-
-@login_required
-def appointment(request):
-    doctor = Doctor.objects.all()
-    context = {
-            "doctor" : doctor,
-        }
-    return render(request, 'coreapp/appointment.html',context)
-
+        return redirect('coreapp:home') 
+        
 @login_required
 def booking(request):
     if request.method == 'POST':
@@ -160,14 +133,7 @@ def booking(request):
         # Redirect to a success page or another URL
         return redirect('success')
     return render(request, 'coreapp/doc/booking.html')
-@login_required
-def doctor_booking(request):
-    if request.user.is_authenticated and request.user.role == 'PATIENT':
-        doctor = Doctor.objects.get()
-        context = {
-            'doctor':doctor
-        }
-    return redirect(reverse('coreapp:appointment'))   
+  
 
 @login_required
 def doc_search(request):
@@ -176,25 +142,48 @@ def doc_search(request):
         context = {
             "doctors": doctors,
         }
-        return render(request, 'coreapp/doc/doc-search.html', context)
+        return render(request, 'coreapp/patient/doc-search.html', context)
     else:
         return HttpResponse("Unauthorized", status=401)
 
-@login_required
-def DoctorProfile(request,doctor_id):
-    doctor = Doctor.objects.get(id=doctor_id)
-    reviews = AppointmentReview.objects.filter(appointment__doctor=doctor)
-    # rating = reviews.aggregate(avg_rating=Avg('doctor_rating'))['avg_rating']
-    rating_sum = reviews.aggregate(sum_doctor_rating=Sum('doctor_rating'))['sum_doctor_rating']
+# @login_required
+# def DoctorProfile(request,doctor_id):
+#     doctor = Doctor.objects.get(id=doctor_id)
+#     reviews = AppointmentReview.objects.filter(appointment__doctor=doctor)
+#     # rating = reviews.aggregate(avg_rating=Avg('doctor_rating'))['avg_rating']
+#     rating_sum = reviews.aggregate(sum_doctor_rating=Sum('doctor_rating'))['sum_doctor_rating']
 
-    print(rating_sum)
+#     print(rating_sum)
+
+    # context = {
+    #         "doctor":doctor,
+    #         "reviews": reviews,
+    #         "rating": rating_sum                          
+    #     }
+    # return render(request, 'coreapp/patient/doc-profile.html',context)
+
+def DoctorProfile(request, doctor_id):
+    try:
+        doctor = Doctor.objects.get(id=doctor_id)
+        appointments = Appointment.objects.filter(doctor=doctor)
+        reviews = AppointmentReview.objects.filter(appointment__in=appointments)
+
+    except Doctor.DoesNotExist:
+        raise Http404("Doctor does not exist.")
+    
+    patients = []
+    for review in reviews:
+        patient = review.appointment.patient
+        patients.append((review, patient))
 
     context = {
-            "doctor":doctor,
-            "reviews": reviews,
-            "rating": rating_sum                          
-        }
-    return render(request, 'coreapp/doc/doc-detail.html',context)
+        "doctor": doctor,
+        "reviews": reviews,
+        "appointments": appointments,
+        "patients": patients,
+    }
+
+    return render(request, 'coreapp/patient/doc-profile.html', context)
 
 
 @login_required
@@ -204,7 +193,7 @@ def hos_search(request):
         context = {
             "hospitals": hospitals,
         }
-        return render(request, 'coreapp/hos/hos-search.html', context)
+        return render(request, 'coreapp/patient/hos-search.html', context)
     else:
         return HttpResponse("Unauthorized", status=401)
 
@@ -223,13 +212,13 @@ def AddReview(request, doctor_id):
     return render(request, 'doc/add_review.html', {'form': form})
 
 
-@login_required
-def DoctorDetailView(request, doctor_id):
-    doctor = Doctor.objects.get(id=doctor_id)
-    return render(request, 'coreapp/doctor_detail.html', {
-        'doctor': doctor,
-        'doctor_id': doctor_id
-    })
+# @login_required
+# def DoctorDetailView(request, doctor_id):
+#     doctor = Doctor.objects.get(id=doctor_id)
+#     return render(request, 'coreapp/patient/doctor_detail.html', {
+#         'doctor': doctor,
+#         'doctor_id': doctor_id
+#     })
 
     
 @login_required
@@ -249,26 +238,29 @@ def AppointmentBookingView(request, doctor_id):
         else:
             return HttpResponse("Invalid data", status=401)
     else:
-        return render(request, 'coreapp/appointment_booking.html', {
+        return render(request, 'coreapp/patient/appointment_booking.html', {
             'form': AppointmentBookingForm(),
             'doctor_id': doctor_id
         })
 
 @login_required
 def AppointmentsView(request):
-    reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
-    not_reviewed_appointments = Appointment.objects.exclude(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
-
+    
+    reviewed_appointments = Appointment.objects.filter(patient=request.user.patient, appointment_status='completed',appointment_review__isnull=False)
+    not_reviewed_appointments = Appointment.objects.filter(appointment_status='completed',patient=request.user.patient,appointment_review__isnull=True)
+    
     completed = {
-        'reviewed_appointments': reviewed_appointments,
-        'not_reviewed_appointments': not_reviewed_appointments
+        'reviewed': reviewed_appointments,
+        'not_reviewed': not_reviewed_appointments
     }
 
-    return render(request, 'coreapp/appointments.html', {
-        'pending': Appointment.objects.filter(appointment_status='pending').order_by('-id'),
-        'cancelled': Appointment.objects.filter(appointment_status='cancelled').order_by('-id'),
+    context =  {
+        'pending': Appointment.objects.filter(appointment_status='pending',patient=request.user.patient).order_by('-id'),
+        'cancelled': Appointment.objects.filter(appointment_status='cancelled',appointment_review__appointment__patient=request.user.patient).order_by('-id'),
         'completed': completed,
-    })
+    }
+    
+    return render(request, 'coreapp/patient/appointment-tab.html',context )
 
 
 @login_required
@@ -276,6 +268,7 @@ def TreatmentReviewView(request, appointment_id):
     appointment = Appointment.objects.get(id=appointment_id)
     
     reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
+    
     if appointment.appointment_status == 'completed' and appointment not in reviewed_appointments:
         if request.method == 'POST':
             model, tokenizer = load_model()
@@ -291,8 +284,8 @@ def TreatmentReviewView(request, appointment_id):
                 appointment = appointment
             )
             appointmentReview.save()
-            return redirect(reverse('coreapp:doctor_detail', kwargs={'doctor_id': appointment.doctor.id}))
-        return render(request, 'coreapp/treatment_review.html', {
+            return redirect(reverse('coreapp:doc_profile', kwargs={'doctor_id': appointment.doctor.id}))
+        return render(request, 'coreapp/patient/treatment_review.html', {
             'appointment_id': appointment_id,
             'doctor_id': appointment.doctor.id
         })
@@ -301,15 +294,12 @@ def TreatmentReviewView(request, appointment_id):
 
 @login_required
 def HosProfile(request, hospital_id):
-    appointments = Appointment.objects.filter(hospital=request.user)
+    hospital = HospitalProfile.objects.get(hospital_id=hospital_id)
 
-    cancelled_appoinments = appointments.filter(appointment_status='cancelled')
-    completed_appoinments = appointments.filter(appointment_status='completed')
-    pending_appoinments = appointments.filter(appointment_status='pending')
-    return render(request, 'coreapp/hos_profile.html', {
-        'cancelled_appointments': cancelled_appoinments,
-        'completed_appointments': completed_appoinments,
-        'pending_appointments': pending_appoinments
+    reviews = AppointmentReview.objects.filter(appointment__hospital=hospital)
+    return render(request, 'coreapp/patient/hos-profile.html', {
+        'hospital': hospital,
+        'reviews':reviews
     })
 
 @login_required
@@ -325,7 +315,7 @@ def AppointmentConfirm(request, appointment_id):
         if request.method == 'POST' and request.POST.get('_method') == 'DELETE':
             appointment.appointment_status = 'cancelled'
             appointment.save()
-            return HttpResponse("Appointment cancelled.")
+            return redirect(reverse('coreapp:appointments'))
 
     except ObjectDoesNotExist:
         return HttpResponse("Appointment not found.")
@@ -341,13 +331,12 @@ def AddMedical(request):
     form = MedicalForm(instance=medical)    
     if request.method == 'POST':
         form = MedicalForm(request.POST,instance=medical)
-        print("asdasdad")
         if form.is_valid():
             a = form.save(commit=False)
-            print("------")
             a.user = request.user.patient
             a.save()
             return redirect('coreapp:home') 
         else:
             form = MedicalForm()
     return render(request, 'coreapp/patient/add-medical.html', {'form':form,"medical":medical})
+   

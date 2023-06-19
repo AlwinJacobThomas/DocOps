@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect,reverse
+from coreapp.forms import MedicalForm
 from . forms import SignupForm,LoginForm,HosLoginForm,HosSignupForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
@@ -19,7 +20,7 @@ def HosSignup(request):
                 login(request, user)
                 return redirect(reverse('hospital:add_profile'))
         else:
-            return render(request, 'hospital/hospital/hos_signup.html', {
+            return render(request, 'user/hospital/hos_signup.html', {
                 'form': form,
                 'error': True,
             })
@@ -82,15 +83,18 @@ def Signup(request):
 
 def Login(request):
     if request.user.is_authenticated:
+        print("-----------")
         return redirect(reverse('coreapp:home'))
 
-    if request.method == 'POST':
+    elif request.method == 'POST':
+        
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username =username, password = password)
  
         if user is not None:
             login(request,user)
+           
             return redirect(reverse('coreapp:home'))
         else:
             print("login error")

@@ -1,89 +1,112 @@
-var currentTab = 0;
-showTab(currentTab);
+var currentTab = 0
+showTab(currentTab)
 
 function showTab(n) {
-    var x = document.getElementsByClassName("tab");
-    x[n].style.display = "block";
-    if (n == 0) {
-        document.getElementById("prevBtn").style.display = "none";
-    } else {
-        document.getElementById("prevBtn").style.display = "inline";
-    }
-    if (n == (x.length - 1)) {
-        document.getElementById("nextBtn").innerHTML = "Mark Response";
-        document.getElementById("nextBtn").addEventListener("click", submitForm);
-    } else {
-        document.getElementById("nextBtn").innerHTML = "Next";
-        document.getElementById("nextBtn").removeEventListener("click", submitForm);
-    }
-    fixStepIndicator(n);
+  var x = document.getElementsByClassName('tab')
+  x[n].style.display = 'block'
+  if (n == 0) {
+    document.getElementById('prevBtn').style.display = 'none'
+  } else {
+    document.getElementById('prevBtn').style.display = 'inline'
+  }
+  if (n == x.length - 1) {
+    document.getElementById('nextBtn').innerHTML = 'Mark Response'
+    document.getElementById('nextBtn').addEventListener('click', submitForm)
+  } else {
+    document.getElementById('nextBtn').innerHTML = 'Next'
+    document.getElementById('nextBtn').removeEventListener('click', submitForm)
+  }
+  fixStepIndicator(n)
+  enableDisableNextButton()
 }
 
 function nextPrev(n) {
-    var x = document.getElementsByClassName("tab");
-    if (n == 1 && !validateForm()) return false;
-    x[currentTab].style.display = "none";
-    currentTab = currentTab + n;
-    showTab(currentTab);
-}
-
-function validateForm() {
-    var x, y, i, valid = true;
-    x = document.getElementsByClassName("tab");
-    y = x[currentTab].getElementsByTagName("textarea");
-    for (i = 0; i < y.length; i++) {
-        if (y[i].value == "") {
-            y[i].className += " invalid";
-            valid = false;
-        }
-    }
-    if (valid) {
-        document.getElementsByClassName("step")[currentTab].className += " finish";
-    }
-    return valid;
+  var x = document.getElementsByClassName('tab')
+  x[currentTab].style.display = 'none'
+  currentTab = currentTab + n
+  showTab(currentTab)
 }
 
 function fixStepIndicator(n) {
-    var i, x = document.getElementsByClassName("step");
-    for (i = 0; i < x.length; i++) {
-        x[i].className = x[i].className.replace(" active", "");
+  var i,
+    x = document.getElementsByClassName('step')
+  for (i = 0; i < x.length; i++) {
+    x[i].className = x[i].className.replace(' active', '')
+  }
+  x[n].className += ' active'
+}
+
+function enableDisableNextButton() {
+  var x = document.getElementsByClassName('tab')
+  var inputs = x[currentTab].querySelectorAll(
+    "input[required]:not([type='hidden']), select[required], textarea[required]",
+  )
+  var nextBtn = document.getElementById('nextBtn')
+
+  var allFieldsFilled = true
+
+  for (var i = 0; i < inputs.length; i++) {
+    if (inputs[i].value === '' || inputs[i].value === null) {
+      allFieldsFilled = false
+      break
     }
-    x[n].className += " active";
+  }
+
+  nextBtn.disabled = !allFieldsFilled
 }
 
 function submitForm() {
-    var form = document.getElementById("regForm");
-    var responseCard = document.getElementById("response-card");
-    var loading = document.getElementById("loading");
-    var success = document.getElementById("success");
-    var error = document.getElementById("error");
+  var form = document.getElementById('regForm')
+  form.submit()
+}
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", form.action, true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+// Image Preview
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader()
+    reader.onload = function (e) {
+      var imagePreview = document.getElementById('imagePreview')
+      imagePreview.style.backgroundImage = 'url(' + e.target.result + ')'
+      imagePreview.style.display = 'none'
+      fadeIn(imagePreview, 650)
+    }
+    reader.readAsDataURL(input.files[0])
+  }
+}
 
-    xhr.onload = function () {
-        form.remove()
-        responseCard.classList.add('show')
-        loading.style.display = "none";
-        if (xhr.status === 200) {
-            success.style.display = "block";
-            // Handle success response here
-        } else {
-            error.style.display = "block";
-            // Handle error response here
-        }
-    };
+function fadeIn(element, duration) {
+  var op = 0 // initial opacity
+  var timer = setInterval(function () {
+    if (op >= 1) {
+      clearInterval(timer)
+    }
+    element.style.display = 'block'
+    element.style.opacity = op
+    element.style.filter = 'alpha(opacity=' + op * 100 + ')'
+    op += op * 0.1 || 0.1
+  }, duration / 10)
+}
 
-    xhr.onerror = function () {
-        loading.style.display = "none";
-        error.style.display = "block";
-        // Handle error response here
-    };
+var imageUpload = document.getElementById('imageUpload')
+if (imageUpload) {
+  imageUpload.addEventListener('change', function () {
+    readURL(this)
+  })
+}
+// End Image Preview
 
-    var formData = new FormData(form);
-    var params = new URLSearchParams(formData).toString();
+// Add event listeners to track changes in form fields
+var inputs = document.getElementsByTagName('input')
+for (var i = 0; i < inputs.length; i++) {
+  inputs[i].addEventListener('input', enableDisableNextButton)
+}
 
-    xhr.send(params);
-    loading.style.display = "block";
+var selects = document.getElementsByTagName('select')
+for (var i = 0; i < selects.length; i++) {
+  selects[i].addEventListener('change', enableDisableNextButton)
+}
+
+var textareas = document.getElementsByTagName('textarea')
+for (var i = 0; i < textareas.length; i++) {
+  textareas[i].addEventListener('input', enableDisableNextButton)
 }

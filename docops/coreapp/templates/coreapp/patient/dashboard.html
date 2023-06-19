@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block tab %}Dashboard{% endblock %}
+
 {% block content %}
 
 <div class="left-content">
@@ -59,7 +60,7 @@
 
     <div class="">
         <h2 class="title" style="grid-area: heading;font-size: 22px; font-family: poppins;font-weight: 600;">
-            {{user.patient.first_name}}
+            {{user.patient.first_name}} {{user.patient.last_name}}
         </h2>
         <div class="height20"></div>
 
@@ -75,7 +76,7 @@
             </svg>
             <div class="sub-heading">Address</div>
         </div>
-        <div class="details">{{hospital.address}}</div>
+        <div class="details">{{user.patient.address}}</div>
         <div class="height20"></div>
         <div class="sub-heading">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -85,7 +86,25 @@
             </svg>
             <div class="sub-heading">Contact</div>
         </div>
-        <div class="details">{{hospital.phone}}</div>
+        <div class="details">{{user.patient.phone}}</div>
+        <div class="height20"></div>
+        <div class="sub-heading">
+            <svg width="24" height="24" viewBox="0 0 1276 1134" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1248.84 0H1073.91C1050.22 0 1038.48 28.5639 1055.09 45.3922L1092.51 82.8131L984.678 190.647C935.522 159.648 877.287 141.712 814.845 141.712C740.225 141.712 671.804 167.398 617.334 210.133C648.333 247.111 672.69 289.846 688.411 336.566C720.518 303.795 765.246 283.424 814.845 283.424C912.494 283.424 991.985 362.916 991.985 460.565C991.985 558.213 912.494 637.705 814.845 637.705C765.467 637.705 720.518 617.334 688.411 584.563C672.69 631.283 648.555 674.019 617.334 710.997C671.583 753.953 740.225 779.417 814.845 779.417C990.878 779.417 1133.7 636.598 1133.7 460.565C1133.7 398.123 1115.76 339.888 1084.76 290.731L1192.6 182.897L1230.02 220.318C1235.33 225.632 1241.97 228.068 1248.62 228.068C1262.35 228.068 1275.41 217.44 1275.41 201.497V26.571C1275.41 11.957 1263.45 0 1248.84 0ZM318.852 141.712C142.819 141.712 0 284.531 0 460.565C0 612.241 106.063 739.339 247.996 771.446V885.701H168.283C153.669 885.701 141.712 897.658 141.712 912.272V1000.84C141.712 1015.46 153.669 1027.41 168.283 1027.41H247.996V1107.13C247.996 1121.74 259.953 1133.7 274.567 1133.7H363.137C377.752 1133.7 389.708 1121.74 389.708 1107.13V1027.41H469.422C484.036 1027.41 495.993 1015.46 495.993 1000.84V912.272C495.993 897.658 484.036 885.701 469.422 885.701H389.708V771.446C531.642 739.118 637.705 612.241 637.705 460.565C637.705 284.531 494.885 141.712 318.852 141.712ZM318.852 637.705C221.204 637.705 141.712 558.213 141.712 460.565C141.712 362.916 221.204 283.424 318.852 283.424C416.501 283.424 495.993 362.916 495.993 460.565C495.993 558.213 416.501 637.705 318.852 637.705Z" fill="black"/>
+                </svg>
+                
+            <div class="sub-heading">Gender</div>
+        </div>
+        <div class="details">{{user.patient.gender}}</div>
+        <div class="height20"></div>
+        <div class="sub-heading">
+            <svg width="24" height="24" viewBox="0 0 413 472" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M136.247 265.13H99.4236C93.3477 265.13 88.3765 260.158 88.3765 254.083V217.259C88.3765 211.183 93.3477 206.212 99.4236 206.212H136.247C142.323 206.212 147.294 211.183 147.294 217.259V254.083C147.294 260.158 142.323 265.13 136.247 265.13ZM235.671 254.083V217.259C235.671 211.183 230.7 206.212 224.624 206.212H187.8C181.724 206.212 176.753 211.183 176.753 217.259V254.083C176.753 260.158 181.724 265.13 187.8 265.13H224.624C230.7 265.13 235.671 260.158 235.671 254.083ZM324.047 254.083V217.259C324.047 211.183 319.076 206.212 313 206.212H276.177C270.101 206.212 265.13 211.183 265.13 217.259V254.083C265.13 260.158 270.101 265.13 276.177 265.13H313C319.076 265.13 324.047 260.158 324.047 254.083ZM235.671 342.459V305.635C235.671 299.56 230.7 294.588 224.624 294.588H187.8C181.724 294.588 176.753 299.56 176.753 305.635V342.459C176.753 348.535 181.724 353.506 187.8 353.506H224.624C230.7 353.506 235.671 348.535 235.671 342.459ZM147.294 342.459V305.635C147.294 299.56 142.323 294.588 136.247 294.588H99.4236C93.3477 294.588 88.3765 299.56 88.3765 305.635V342.459C88.3765 348.535 93.3477 353.506 99.4236 353.506H136.247C142.323 353.506 147.294 348.535 147.294 342.459ZM324.047 342.459V305.635C324.047 299.56 319.076 294.588 313 294.588H276.177C270.101 294.588 265.13 299.56 265.13 305.635V342.459C265.13 348.535 270.101 353.506 276.177 353.506H313C319.076 353.506 324.047 348.535 324.047 342.459ZM412.424 103.106V427.153C412.424 451.549 392.631 471.341 368.236 471.341H44.1883C19.7927 471.341 0 451.549 0 427.153V103.106C0 78.7103 19.7927 58.9177 44.1883 58.9177H88.3765V11.0471C88.3765 4.97118 93.3477 0 99.4236 0H136.247C142.323 0 147.294 4.97118 147.294 11.0471V58.9177H265.13V11.0471C265.13 4.97118 270.101 0 276.177 0H313C319.076 0 324.047 4.97118 324.047 11.0471V58.9177H368.236C392.631 58.9177 412.424 78.7103 412.424 103.106ZM368.236 421.63V147.294H44.1883V421.63C44.1883 424.668 46.6739 427.153 49.7118 427.153H362.712C365.75 427.153 368.236 424.668 368.236 421.63Z" fill="black"/>
+                </svg>
+                
+            <div class="sub-heading">D-O-B</div>
+        </div>
+        <div class="details">{{user.patient.dob}}</div>
     </div>
 </div>
 <div class="right-content">
@@ -108,13 +127,24 @@
 
 
         </div>
-        <div class="height36"></div>
+   
        
         <div class="facility-card">
-            {{medical.blood_type}}
-            
+            <div class="facility-title">Blood Group</div>
+            <div class="facility-value">{{medical.blood_type}}</div>
         </div>
-        
+        <div class="facility-card">
+            <div class="facility-title">Allergies</div>
+            <div class="facility-value">{{medical.allergies}}</div>
+        </div>
+        <div class="facility-card">
+            <div class="facility-title">Chronic Conditions</div>
+            <div class="facility-value">{{medical.chronic_conditions}}</div>
+        </div>
+        <div class="facility-card">
+            <div class="facility-title">Medication</div>
+            <div class="facility-value">{{medical.medication}}</div>
+        </div>
         <div class="height20"></div>
 
         {% if messages %}
@@ -160,21 +190,30 @@
         padding: 20px;
         display: flex;
         flex-direction: column;
+        gap: 15px;
 
     }
 
     .facility-card {
         background: #F9F9F9;
-        font-size: 16px;
-        color: #080808;
-        font-weight: 500;
+        
         border-radius: 10px;
         padding: 10px 30px;
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
-        align-items: center;
+        
     }
-
+    .facility-title{
+        font-size: 20px;
+        color: #080808;
+        font-weight: 500;
+    }
+    .facility-value{
+        font-size: 16px;
+        color: #626262;
+        font-weight: 500;
+    }
     .popup {
         display: none;
         position: fixed;

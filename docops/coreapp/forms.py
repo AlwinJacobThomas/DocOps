@@ -3,45 +3,19 @@ from user.models import Patient, Hospital, PatientProfile, HospitalProfile
 from hospital.models import Doctor
 from .models import Appointment, AppointmentReview,Medical
 
-class AddPatientProfileForm(forms.ModelForm):
-    first_name = forms.CharField(
-        label='first Name',
-        widget=forms.TextInput(
-            attrs={
-                'class': 'input',
-                'placeholder': 'First Name'
-            })
-    )
-    last_name = forms.CharField(
-        label='last Name',
-        widget=forms.TextInput(
-            attrs={
-                'class': 'input',
-                'placeholder': 'Last Name'
-            })
-    )
-    address = forms.CharField(
-        label='Address',
-        widget=forms.TextInput(
-            attrs={
-                'class': 'address',
-                'placeholder': 'Address'
-            })
-    )
-    # pic = forms.ImageField(
-    #     label='Profile Pic',
-    #     widget=forms.FileInput(
-    #         attrs={
-    #             'id': 'imageUpload',
-    #             'accept': '.png, .jpg, .jpeg'
-    #         })
-    # )
 
+class AddPatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
-        fields = ['first_name','last_name', 'address', 'pic', 'gender', 'phone', 'dob']
-
-
+        fields = ['first_name', 'last_name', 'address', 'pic', 'gender', 'phone', 'dob']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-field', 'placeholder': 'First Name'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-field', 'placeholder': 'Last Name'}),
+            'address': forms.TextInput(attrs={'class': 'form-field', 'placeholder': 'Address'}),
+            'phone': forms.TextInput(attrs={'class':'form-field','type': 'tel'}),
+            'dob': forms.DateInput(attrs={'class':'form-field','type': 'date'}),
+            'gender': forms.Select(attrs={'class':'form-select-field'}),
+        }
 
 class AppointmentReviewForm(forms.ModelForm):
     class Meta:
@@ -53,16 +27,16 @@ class AppointmentBookingForm(forms.ModelForm):
         label='Date',
         widget=forms.DateInput(
             attrs={
-                'type': 'date',
-                'oninput': "this.className = ''"
+                'class':'form-field',
+                'type': 'date'
             })
     )
     appointment_time = forms.CharField(
         label='Time',
         widget=forms.DateInput(
             attrs={
-                'type': 'time',
-                'oninput': "this.className = ''"
+                'class':'form-field',
+                'type': 'time'
             })
     )
 

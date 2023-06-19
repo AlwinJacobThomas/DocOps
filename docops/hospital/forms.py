@@ -8,7 +8,7 @@ class AddHospitalProfileForm(forms.ModelForm):
         label='Hospital Name',
         widget=forms.TextInput(
             attrs={
-                'class': 'input',
+                'class': 'form-field',
                 'placeholder': 'Hospital Name'
             })
     )
@@ -16,11 +16,35 @@ class AddHospitalProfileForm(forms.ModelForm):
         label='Address',
         widget=forms.TextInput(
             attrs={
-                'class': 'address',
+                'class': 'address form-field',
                 'placeholder': 'Address'
             })
     )
-   
+    location = forms.CharField(
+        label='Location',
+        widget=forms.TextInput(
+            attrs={
+                'class': 'locationInput form-field',
+                'placeholder': 'Location'
+            })
+    )
+    website = forms.CharField(
+        label='Website',
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-field',
+                'placeholder': 'WebSite'
+            })
+    )
+    phone = forms.CharField(
+        label='Phone',
+        widget=forms.NumberInput(
+            attrs={
+                'class': 'form-field',
+                'placeholder': 'Location',
+                'type':'tel'
+            })
+    )
 
     class Meta:
         model = HospitalProfile

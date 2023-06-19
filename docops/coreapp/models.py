@@ -3,6 +3,8 @@ from django.conf import settings
 from user.models import PatientProfile, HospitalProfile
 from hospital.models import Doctor
 from django.core.validators import MinValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Appointment(models.Model):
     STATUS_CHOICES = (
@@ -29,7 +31,7 @@ class AppointmentReview(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.id
+        return f"AppointmentReview #{self.id}"
 
 class Medical(models.Model):
     BLOOD_TYPE_CHOICES = [
@@ -47,3 +49,9 @@ class Medical(models.Model):
     allergies = models.CharField(null=True,blank=True,max_length=100)
     chronic_conditions = models.CharField(null=True,blank=True,max_length=100)
     medication = models.CharField(null=True,blank=True,max_length=100)
+
+# @receiver(post_save, sender=PatientProfile)
+# def create_medical(sender, instance, created, **kwargs):
+#     if created:
+#         Medical.objects.create(user=instance)
+#         print("medical created -------")

@@ -144,7 +144,7 @@ def EditDoctor(request, doctor_id):
                 doctor = form.save(commit=False)
                 doctor.hospital = request.user.hospital
                 if 'pic' in request.FILES:
-                    doctor.pic = request.FILES['pic']
+                    doctor.pic = request.FILES.get('pic')
                 doctor.save()
 
                 return redirect(reverse('hospital:hos_doctors'))
@@ -175,9 +175,8 @@ def DeleteDoctor(request, doctor_id):
 def DoctorProfile(request, doctor_id):
     try:
         doctor = Doctor.objects.get(id=doctor_id)
-        appointment = Appointment.objects.filter(doctor=doctor)
-        reviews = AppointmentReview.objects.all()
-       
+        appointments = Appointment.objects.filter(doctor=doctor)
+        reviews = AppointmentReview.objects.filter(appointment__in=appointments)
 
     except Doctor.DoesNotExist:
         raise Http404("Doctor does not exist.")
@@ -185,7 +184,7 @@ def DoctorProfile(request, doctor_id):
     context = {
         "doctor": doctor,
         "reviews":reviews,
-        'appointments':appointment
+        'appointments':appointments
     }
 
     return render(request, 'hospital/doctor-profile.html', context)
@@ -218,7 +217,7 @@ def HosAppointmentConfirmView(request, appointment_id):
         if request.method == 'POST' and request.POST.get('_method') == 'DELETE':
             appointment.appointment_status = 'cancelled'
             appointment.save()
-            return HttpResponse("Appointment cancelled.")
+            return redirect(reverse('hospital:hos_appointments'))
 
     except ObjectDoesNotExist:
         return HttpResponse("Appointment not found.")

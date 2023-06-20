@@ -13,7 +13,7 @@
     > pip install django
     
 4. Install all Modules
-    > pip install -r requirement.txt.
+    > pip install -r requirements.txt.
 5. migrating models
     > python manage.py makemigrations
 

@@ -23,11 +23,11 @@ def home(request):
             return redirect(reverse('hospital:hos_dashboard'))
         else:
             user = request.user
-           # medical = get_object_or_404(Medical, user=user.patient)
+            medical = get_object_or_404(Medical, user=user.patient)
             context = {
                 'pending': Appointment.objects.filter(appointment_status='pending').order_by('-id'),
                 'user': user,
-                # 'medical': medical
+                'medical': medical
             }
             return render(request, 'coreapp/patient/dashboard.html', context)
     else:
@@ -256,7 +256,7 @@ def AppointmentsView(request):
 
     context =  {
         'pending': Appointment.objects.filter(appointment_status='pending',patient=request.user.patient).order_by('-id'),
-        'cancelled': Appointment.objects.filter(appointment_status='cancelled',appointment_review__appointment__patient=request.user.patient).order_by('-id'),
+        'cancelled': Appointment.objects.filter(appointment_status='cancelled',patient=request.user.patient).order_by('-id'),
         'completed': completed,
     }
     

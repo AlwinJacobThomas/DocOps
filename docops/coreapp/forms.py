@@ -36,7 +36,8 @@ class AppointmentBookingForm(forms.ModelForm):
         widget=forms.DateInput(
             attrs={
                 'class':'form-field',
-                'type': 'time'
+                'type': 'time',
+                'step':'1800'
             })
     )
 

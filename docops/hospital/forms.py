@@ -41,7 +41,7 @@ class AddHospitalProfileForm(forms.ModelForm):
         widget=forms.NumberInput(
             attrs={
                 'class': 'form-field',
-                'placeholder': 'Location',
+                'placeholder': 'Phone',
                 'type':'tel'
             })
     )
@@ -71,8 +71,8 @@ class FacilityForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-field'}),
             'description': forms.Textarea(attrs={'class': 'form-field'}),
-            'opening_time': forms.TimeInput(attrs={'class': 'form-field', 'type': 'time'}),
-            'closing_time': forms.TimeInput(attrs={'class': 'form-field', 'type': 'time'}),
+            'opening_time': forms.TimeInput(attrs={'class': 'form-field', 'type': 'time','step':'1800'}),
+            'closing_time': forms.TimeInput(attrs={'class': 'form-field', 'type': 'time','step':'1800'}),
             'is_available': forms.CheckboxInput(attrs={'class': 'form-field'}),
         }
       

@@ -34,7 +34,7 @@
                     <div class="btn-wrap">
                         <form action="{% url 'hospital:hos_appointment_confirm' i.id %}" id="markCompletion" method="post">
                             {% csrf_token %}
-                            <button type="button" class="btn btn-primary" onclick="openDialog('markCompletion', 'Would you like to mark Appointment {{i.id}} as completed?')">Mark Completed</button>
+                            <button type="button"  class="btn btn-primary" onclick="openDialog('markCompletion', 'Would you like to mark Appointment {{i.id}} as completed?')">Mark Completed</button>
                         </form>
                         <form action="{% url 'hospital:hos_appointment_confirm' i.id %}" id="cancel" method="post">
                             {% csrf_token %}

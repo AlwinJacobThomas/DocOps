@@ -21,7 +21,8 @@
             </h2>
             <div class="height20"></div>
             <div class="sub-heading">
-                <img src="{{hospital.pic.url}}" alt="" height="100" width="100" style="object-fit: cover; border-radius: 50%;">
+                <img src="{{hospital.pic.url}}" alt="" height="100" width="100"
+                    style="object-fit: cover; border-radius: 50%;">
             </div>
             <div class="height20"></div>
             <div class="sub-heading">
@@ -58,8 +59,11 @@
         <div class="card p-3">
             <div class="user">
                 <img src="{{review.appointment.patient.pic.url}}" width="30" height="30" class="user-img">
-                <span><small class="user-detail">{{review.appointment.patient.first_name}}</small> <small
-                        class="review">{{review.hospital_review}}</small></span>
+                <span>
+                    <small class="user-detail">{{review.appointment.patient.first_name}}</small>
+                    <small class="review">{{review.hospital_review}}</small>
+                </span>
+                <small class="user-detail">{{review.hospital_rating}}</small>
             </div>
             <small class="review-time">{{review.created_at}}</small>
 
@@ -68,7 +72,7 @@
 
         {% endfor %}
         {% else %}
-        
+
         <div class="review">No Reviews</div>
         {% endif %}
     </div>
@@ -173,10 +177,12 @@
     .user-img {
         border-radius: 50%;
     }
-    .review-time{
+
+    .review-time {
         font-size: 12px;
         color: #706F6F;
     }
+
     .user {
         display: flex;
         align-items: center;

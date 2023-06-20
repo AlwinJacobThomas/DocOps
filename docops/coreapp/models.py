@@ -55,3 +55,5 @@ class Medical(models.Model):
 #     if created:
 #         Medical.objects.create(user=instance)
 #         print("medical created -------")
+
+

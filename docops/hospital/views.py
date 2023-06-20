@@ -10,6 +10,8 @@ from django.http import Http404
 from coreapp.models import Appointment, AppointmentReview
 from django.http import HttpResponse
 from django.contrib import messages
+import math
+from django.db.models import Avg, Sum
 
 User = get_user_model()
 
@@ -177,6 +179,23 @@ def DoctorProfile(request, doctor_id):
         doctor = Doctor.objects.get(id=doctor_id)
         appointments = Appointment.objects.filter(doctor=doctor)
         reviews = AppointmentReview.objects.filter(appointment__in=appointments)
+        # # Calculate the average doctor rating
+        
+
+        # average_rating = reviews.aggregate(Avg('doctor_rating'))['doctor_rating__avg']  
+        # converted_value = math.ceil(float(average_rating) * 10) / 2.0
+      
+
+        # # Limit the value between 1 and 5
+        # converted_value = min(5.0, max(1.0, converted_value)) #connverted b/w 1-5
+        # rat=int(converted_value) #removed the decimal part for star count
+        # star=range(rat) #set the range for no. of star loop
+        # print(average_rating)
+        # if converted_value % 1 == 0:
+        #     half = False
+            
+        # else:
+        #     half = True
 
     except Doctor.DoesNotExist:
         raise Http404("Doctor does not exist.")
@@ -184,7 +203,10 @@ def DoctorProfile(request, doctor_id):
     context = {
         "doctor": doctor,
         "reviews":reviews,
-        'appointments':appointments
+        'appointments':appointments,
+        # "average_rating": converted_value,
+        # 'half': half,
+        # 'star':star
     }
 
     return render(request, 'hospital/doctor-profile.html', context)

@@ -21,24 +21,24 @@
     <div class="profile-details">
       <p style="font-size: 22px;" class="title">{{ doctor.name }}</p>
       <div class="star">
+        {% for i in star%}
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="gold"
-          class="feather feather-star">
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-          </polygon>
+            class="feather feather-star">
+            <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+            </polygon>
         </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="gold"
-          class="feather feather-star">
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-          </polygon>
-        </svg>
+        {% endfor %}
+        {% if half %}
+  
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 12 24" fill="gold"
-          class="feather feather-star">
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-          </polygon>
+            class="feather feather-star">
+            <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+            </polygon>
         </svg>
+        {%  endif %}
+        <div class="user-detail">{{average_rating}}</div>
       </div>
       <div class="height20"></div>
 
@@ -132,8 +132,12 @@
     
     <div class="card p-3">
         <div class="user">
-          <img src="{{review.appointment.patient.pic.url}}" width="30" class="user-img">
-          <span><small class="user-detail">{{review.appointment.patient.first_name}}</small> <small class="review">{{review.doctor_review}}</small></span>
+          <img src="{{review.appointment.patient.pic.url}}"  class="user-img">
+          <span>
+            <small class="user-detail">{{review.appointment.patient.first_name}}</small>
+            <small class="review">{{review.doctor_review}}</small>
+          </span>
+          <small class="user-detail">{{review.doctor_rating}}</small>
         </div>
         <small>{{review.created_at}}</small>
         
@@ -246,6 +250,9 @@
 
     .user-img {
       border-radius: 50%;
+      height: 30px;
+      width: 30px;
+      object-fit: cover;
     }
 
     .user {

@@ -58,13 +58,14 @@ def load_model():
 
 
 def predict_star_rating(new_review, model, tokenizer):
+    print(new_review)
     # Tokenize and pad the new review sequence
     new_sequences = tokenizer.texts_to_sequences([new_review])
     new_sequences = pad_sequences(new_sequences, maxlen=model.input_shape[1])
 
     # Make predictions
     predictions = model.predict(new_sequences)
-    print(f'==={predictions[0][0]}')
+    print(f'===>{predictions[0][0]}')
     # Return the predicted star rating
     return predictions[0][0]
 
@@ -73,7 +74,7 @@ def predict_star_rating(new_review, model, tokenizer):
 # train_model()
 
 # Load the pre-trained model
-model, tokenizer = load_model()
+# model, tokenizer = load_model()
 
 # Example usage
 # new_review = "i am so satisfied.Great way of talking and good communication skill of the doctor"

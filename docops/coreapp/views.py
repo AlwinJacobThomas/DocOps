@@ -8,11 +8,11 @@ from hospital.models import Doctor
 from .models import Appointment, AppointmentReview, Medical
 from django.http import HttpResponse
 from django.db.models import Avg, Sum
-from docops.lstm2 import predict_star_rating, load_model, tokenizer
+from docops.lstm import analyze_sentiment
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.http import Http404
-
+import math
 # Create your views here.
 User = get_user_model()
 
@@ -25,7 +25,7 @@ def home(request):
             user = request.user
             medical = get_object_or_404(Medical, user=user.patient)
             context = {
-                'pending': Appointment.objects.filter(appointment_status='pending').order_by('-id'),
+            
                 'user': user,
                 'medical': medical
             }
@@ -139,6 +139,7 @@ def booking(request):
 def doc_search(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
         doctors = Doctor.objects.all()
+        
         context = {
             "doctors": doctors,
         }
@@ -167,10 +168,27 @@ def DoctorProfile(request, doctor_id):
         doctor = Doctor.objects.get(id=doctor_id)
         appointments = Appointment.objects.filter(doctor=doctor)
         reviews = AppointmentReview.objects.filter(appointment__in=appointments)
+        # Calculate the average doctor rating
+        
+
+        average_rating = reviews.aggregate(Avg('doctor_rating'))['doctor_rating__avg']  
+        converted_value = math.ceil(float(average_rating) * 10) / 2.0
+      
+
+        # Limit the value between 1 and 5
+        converted_value = min(5.0, max(1.0, converted_value)) #connverted b/w 1-5
+        rat=int(converted_value) #removed the decimal part for star count
+        star=range(rat) #set the range for no. of star loop
+        print(average_rating)
+        if converted_value % 1 == 0:
+            half = False
+            
+        else:
+            half = True
 
     except Doctor.DoesNotExist:
         raise Http404("Doctor does not exist.")
-    
+
     patients = []
     for review in reviews:
         patient = review.appointment.patient
@@ -181,6 +199,9 @@ def DoctorProfile(request, doctor_id):
         "reviews": reviews,
         "appointments": appointments,
         "patients": patients,
+        "average_rating": converted_value,
+        'half': half,
+        'star':star
     }
 
     return render(request, 'coreapp/patient/doc-profile.html', context)
@@ -244,10 +265,10 @@ def AppointmentBookingView(request, doctor_id):
         })
 
 @login_required
-def AppointmentsView(request):
-    
-    reviewed_appointments = Appointment.objects.filter(patient=request.user.patient, appointment_status='completed',appointment_review__isnull=False)
-    not_reviewed_appointments = Appointment.objects.filter(appointment_status='completed',patient=request.user.patient,appointment_review__isnull=True)
+def AppointmentsView(request):     #appointment tab     
+                                
+    reviewed_appointments = Appointment.objects.filter(patient=request.user.patient, appointment_status='completed',appointment_review__isnull=False).order_by('appointment_date','appointment_time')
+    not_reviewed_appointments = Appointment.objects.filter(appointment_status='completed',patient=request.user.patient,appointment_review__isnull=True).order_by('appointment_date','appointment_time')
     
     completed = {
         'reviewed': reviewed_appointments,
@@ -255,8 +276,8 @@ def AppointmentsView(request):
     }
 
     context =  {
-        'pending': Appointment.objects.filter(appointment_status='pending',patient=request.user.patient).order_by('-id'),
-        'cancelled': Appointment.objects.filter(appointment_status='cancelled',patient=request.user.patient).order_by('-id'),
+        'pending': Appointment.objects.filter(appointment_status='pending',patient=request.user.patient).order_by('appointment_date','appointment_time'),
+        'cancelled': Appointment.objects.filter(appointment_status='cancelled',patient=request.user.patient).order_by('appointment_date','appointment_time'),
         'completed': completed,
     }
     
@@ -266,23 +287,26 @@ def AppointmentsView(request):
 @login_required
 def TreatmentReviewView(request, appointment_id):
     appointment = Appointment.objects.get(id=appointment_id)
-    
-    reviewed_appointments = Appointment.objects.filter(appointment_review__appointment__patient=PatientProfile.objects.get(user=request.user))
+
+    reviewed_appointments = Appointment.objects.filter(patient=request.user.patient,appointment_status='completed',appointment_review__isnull=False)
     
     if appointment.appointment_status == 'completed' and appointment not in reviewed_appointments:
         if request.method == 'POST':
-            model, tokenizer = load_model()
-
             hos_review = request.POST.get('hos_review')
             doc_review = request.POST.get('doc_review')
 
+            hos_rating = analyze_sentiment(hos_review)
+            doc_rating = analyze_sentiment(doc_review)
+            
             appointmentReview = AppointmentReview(
                 hospital_review = hos_review,
-                hospital_rating = float(predict_star_rating(hos_review, model, tokenizer)),
+                hospital_rating = float(hos_rating),
                 doctor_review = doc_review,
-                doctor_rating = float(predict_star_rating(doc_review, model, tokenizer)),
+                doctor_rating = float(doc_rating),
                 appointment = appointment
             )
+            
+            print(f'------{hos_rating}---{doc_rating}')
             appointmentReview.save()
             return redirect(reverse('coreapp:doc_profile', kwargs={'doctor_id': appointment.doctor.id}))
         return render(request, 'coreapp/patient/treatment_review.html', {

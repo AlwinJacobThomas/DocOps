@@ -215,7 +215,8 @@ def DoctorProfile(request, doctor_id):
 @login_required
 def hos_search(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
-        hospitals = HospitalProfile.objects.all()
+        # hospitals = HospitalProfile.objects.all()
+        hospitals = HospitalProfile.objects.annotate(average_rating=Avg('h_appointment__appointment_review__hospital_rating')).order_by('-average_rating')
         context = {
             "hospitals": hospitals,
         }

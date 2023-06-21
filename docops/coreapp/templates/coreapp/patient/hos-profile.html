@@ -19,6 +19,27 @@
             <h2 class="title" style="grid-area: heading;font-size: 22px; font-family: poppins;font-weight: 600;">
                 {{hospital.hospital_name}}
             </h2>
+            <div class="star" style="display: flex;">
+                 
+                {% for i in star%}
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="gold"
+                    class="feather feather-star">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
+                </svg>
+                {% endfor %}
+                {% if half %}
+          
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 12 24" fill="gold"
+                    class="feather feather-star">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
+                </svg>
+                {%  endif %}
+                <div class="user-detail">{{avg|floatformat:3}}</div>
+            </div>
             <div class="height20"></div>
             <div class="sub-heading">
                 <img src="{{hospital.pic.url}}" alt="" height="100" width="100"
@@ -61,7 +82,7 @@
                 {% if patient.pic %}
                 <img src="{{review.appointment.patient.pic.url}}"  class="user-img" >
                 {% else %}
-                <img src="{% static 'hospital/img/avatar.jpg' %}" class="user-img" alt="dp">
+                <img src="{% static 'hospital/img/avatar.jpg' %}" class="user-img" alt="dp" style="height: 30px;">
                 {% endif %}
                 <span>
                     <small class="user-detail">{{review.appointment.patient.first_name}}</small>
@@ -180,6 +201,9 @@
 
     .user-img {
         border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        object-fit: cover;
     }
 
     .review-time {

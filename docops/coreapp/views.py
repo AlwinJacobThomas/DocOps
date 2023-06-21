@@ -13,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.http import Http404
 import math
+
 # Create your views here.
 User = get_user_model()
 
@@ -131,8 +132,11 @@ def booking(request):
 @login_required
 def doc_search(request):
     if request.user.is_authenticated and request.user.role == 'PATIENT':
-        doctors = Doctor.objects.all()
+        doctors = Doctor.objects.annotate(average_rating=Avg('d_appointment__appointment_review__doctor_rating')).order_by('-average_rating')
         
+
+
+
         context = {
             "doctors": doctors,
         }
@@ -179,7 +183,7 @@ def DoctorProfile(request, doctor_id):
         
         rat=int(converted_value) #removed the decimal part for star count
         star=range(rat) #set the range for no. of star loop
-        
+
         print(average_rating)
         if converted_value % 1 == 0:
             half = False
@@ -320,11 +324,39 @@ def TreatmentReviewView(request, appointment_id):
 @login_required
 def HosProfile(request, hospital_id):
     hospital = HospitalProfile.objects.get(hospital_id=hospital_id)
+    
+    appointments = Appointment.objects.filter(hospital=hospital)
+    reviews = AppointmentReview.objects.filter(appointment__in=appointments)
+    average_rating = reviews.aggregate(Avg('hospital_rating'))['hospital_rating__avg']  
+        
+
+    if average_rating is not None:
+        converted_value = math.ceil(float(average_rating) * 10) / 2.0
+    else:
+        converted_value = 0.0
+    
+    
+
+    # Limit the value between 1 and 5
+    converted_value = min(5.0, max(1.0, converted_value)) #connverted b/w 1-5
+    
+    rat=int(converted_value) #removed the decimal part for star count
+    star=range(rat) #set the range for no. of star loop
+
+    print(average_rating)
+    if converted_value % 1 == 0:
+        half = False
+        
+    else:
+        half = True
 
     reviews = AppointmentReview.objects.filter(appointment__hospital=hospital)
     return render(request, 'coreapp/patient/hos-profile.html', {
         'hospital': hospital,
-        'reviews':reviews
+        'reviews':reviews,
+        'rat':rat,
+        'avg':average_rating,
+        'star':star
     })
 
 @login_required

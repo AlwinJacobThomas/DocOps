@@ -11,7 +11,7 @@
 
 {% block dialog %}
 <div id="modal_wrapper">
-    <form id="regForm" method="post" action="" enctype="multipart/form-data" >
+    <form id="regForm" method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         <a class="btn-close" id="btn-close" href="{% url 'coreapp:home' %}">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -58,16 +58,21 @@
         <div class="tab">
             <label>Upload Pic</label>
             <p class="container">
-                <div class="avatar-upload">
-                    <div class="avatar-edit">
-                        <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" name="pic" >
-                        <label for="imageUpload"></label>
-                    </div>
-                    <div class="avatar-preview">
-                        <div id="imagePreview" style="background-image: url({{form.pic.value.url}});">
-                        </div>
-                    </div>
+            <div class="avatar-upload">
+                <div class="avatar-edit">
+                    <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" name="pic" />
+                    <label for="imageUpload"></label>
                 </div>
+                <div class="avatar-preview">
+                    {% if form.pic.value %}
+                    <div id="imagePreview" style="background-image: url({{form.pic.value.url}});">
+                    </div>
+                    {% else %}
+                    <div id="imagePreview"></div>
+                    {% endif %}
+
+                </div>
+            </div>
             </p>
         </div>
         <!-- Circles which indicate the steps of the form: -->
@@ -76,7 +81,7 @@
             <span class="step"></span>
             <span class="step"></span>
             <span class="step"></span>
-            
+
         </div>
         <div class="gap-12"></div>
         <div style="overflow:auto;">
@@ -106,15 +111,15 @@
 <script>
     // Frontend validation for the phone field
     document.getElementById('regForm').addEventListener('submit', function (event) {
-       var phoneInput = document.getElementById('id_phone');
-       var phonePattern = /^\d{10}$/;
+        var phoneInput = document.getElementById('id_phone');
+        var phonePattern = /^\d{10}$/;
 
-       if (phoneInput.value.length !== 10 || !phonePattern.test(phoneInput.value)) {
-           event.preventDefault(); // Prevent form submission
-           alert('Enter a valid 10-digit phone number.');
-           phoneInput.focus();
-       }
-   });
+        if (phoneInput.value.length !== 10 || !phonePattern.test(phoneInput.value)) {
+            event.preventDefault(); // Prevent form submission
+            alert('Enter a valid 10-digit phone number.');
+            phoneInput.focus();
+        }
+    });
 </script>
 
 {% endblock %}

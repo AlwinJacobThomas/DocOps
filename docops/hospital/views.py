@@ -136,8 +136,7 @@ def EditDoctor(request, doctor_id):
     if request.user.is_authenticated and request.user.role == 'HOSPITAL':
         doctor = get_object_or_404(Doctor, id=doctor_id)
         # populate with data in form for edit form
-        form = DoctorForm(request.POST or None,
-                          request.FILES or None, instance=doctor)
+        form = DoctorForm(request.POST or None,request.FILES or None, instance=doctor)
 
         if request.method == "POST":
 
@@ -151,6 +150,7 @@ def EditDoctor(request, doctor_id):
 
                 return redirect(reverse('hospital:hos_doctors'))
             else:
+                form = DoctorForm(request.POST or None,request.FILES or None, instance=doctor)
                 return render(request, 'hospital/add-doctor.html', {
                     'form': form,
                     'error': True,

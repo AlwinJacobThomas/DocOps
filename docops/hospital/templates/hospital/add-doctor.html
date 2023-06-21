@@ -54,16 +54,22 @@
         <div class="tab">
             <label>Upload Pic</label>
             <p class="container">
-                <div class="avatar-upload">
-                    <div class="avatar-edit">
-                        <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" name="pic" />
-                        <label for="imageUpload"></label>
-                    </div>
-                    <div class="avatar-preview">
-                        <div id="imagePreview" style="background-image: url({{form.pic.value.url}});">
-                        </div>
-                    </div>
+            <div class="avatar-upload">
+                <div class="avatar-edit">
+                    <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" name="pic" />
+                    <label for="imageUpload"></label>
                 </div>
+                <div class="avatar-preview">
+                    {% if form.pic.value %}
+                    <div id="imagePreview" style="background-image: url({{form.pic.value.url}});">
+                    </div>
+                    {% else %}
+                    <div id="imagePreview"></div>
+                    {% endif %}
+
+
+                </div>
+            </div>
             </p>
         </div>
         <!-- Circles which indicate the steps of the form: -->

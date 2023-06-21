@@ -1,81 +1,110 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
+import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Embedding, LSTM, Dense
-import pickle
+from sklearn.model_selection import cross_val_score
+from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
 
-def train_sentiment_model():
+
+def train_model():
     # Load the dataset
-    data = pd.read_csv('docops/reviews.csv')
-    data['tag'] = data['tag'].map({'negative': 0, 'positive': 1})
+    df = pd.read_csv('reviews.csv')
+
+    # Encode the target variable
+    df['tag'] = df['tag'].map({'negative': 0, 'positive': 1})
+
     # Split the dataset into training and testing sets
-    X = data['review'].values
-    y = data['tag'].values
+    train_size = int(0.8 * len(df))
+    train_reviews = df['review'][:train_size]
+    train_tags = df['tag'][:train_size]
+    test_reviews = df['review'][train_size:]
+    test_tags = df['tag'][train_size:]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # Tokenize the text data
-    max_words = 10000
-    tokenizer = Tokenizer(num_words=max_words)
-    tokenizer.fit_on_texts(X_train)
-
-    # Save the tokenizer
-    with open('tokenizer.pkl', 'wb') as f:
-        pickle.dump(tokenizer, f)
+    # Tokenize the text
+    tokenizer = Tokenizer(lower=True)
+    tokenizer.fit_on_texts(train_reviews)
 
     # Convert text to sequences
-    X_train_seq = tokenizer.texts_to_sequences(X_train)
-    X_test_seq = tokenizer.texts_to_sequences(X_test)
+    train_sequences = tokenizer.texts_to_sequences(train_reviews)
+    test_sequences = tokenizer.texts_to_sequences(test_reviews)
 
-    # Pad sequences for equal length
-    max_sequence_length = 100
-    X_train_padded = pad_sequences(X_train_seq, maxlen=max_sequence_length)
-    X_test_padded = pad_sequences(X_test_seq, maxlen=max_sequence_length)
+    # Pad sequences
+    max_sequence_length = max(len(seq) for seq in train_sequences)
+    train_sequences = pad_sequences(train_sequences, maxlen=max_sequence_length)
+    test_sequences = pad_sequences(test_sequences, maxlen=max_sequence_length)
 
-    # Build the LSTM model
-    embedding_dim = 100
-    model = Sequential()
-    model.add(Embedding(input_dim=max_words, output_dim=embedding_dim, input_length=max_sequence_length))
-    model.add(LSTM(units=128, dropout=0.2, recurrent_dropout=0.2))
-    model.add(Dense(units=1, activation='sigmoid'))
+    # Create a KerasClassifier model for sklearn kit crossvalidator
+    model = KerasClassifier(build_fn=lambda: create_model(tokenizer, max_sequence_length), epochs=20, batch_size=32, verbose=1)
 
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-    model.summary()
+    # Define the model
+    model.model = tf.keras.models.Sequential([
+        tf.keras.layers.Embedding(len(tokenizer.word_index) + 1, 128, input_length=max_sequence_length),
+        tf.keras.layers.LSTM(128),
+        tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+
+    # Compile the model
+    model.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    # Perform cross-validation
+    scores = cross_val_score(model, train_sequences, train_tags, cv=5)  # 5-fold cross-validation
 
     # Train the model
-    batch_size = 64
-    epochs = 10
-    model.fit(X_train_padded, y_train, batch_size=batch_size, epochs=epochs, validation_data=(X_test_padded, y_test))
+    model.model.fit(train_sequences, train_tags, epochs=5, validation_data=(test_sequences, test_tags))
+
+    # Print the accuracy for each fold and the mean accuracy
+    for i, score in enumerate(scores):
+        print(f'Fold {i+1} Accuracy: {score}')
+
+    print('Mean Accuracy: {:.2f}%'.format(scores.mean() * 100))
+
+    # Evaluate the model on the test set
+    _, accuracy = model.model.evaluate(test_sequences, test_tags)
+    print('Test Accuracy:', accuracy*100,'%')
 
     # Save the trained model
-    model.save('sentiment_model.h5')
+    model.model.save('sentiment_model.h5')
+
+def create_model(tokenizer, max_sequence_length):
+    # Define the model
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Embedding(len(tokenizer.word_index) + 1, 128, input_length=max_sequence_length),
+        tf.keras.layers.LSTM(128),
+        tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+
+    # Compile the model
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    return model
 
 def analyze_sentiment(review_text):
     # Load the trained model
-    model = load_model('sentiment_model.h5')
+    model = tf.keras.models.load_model('sentiment_model.h5')
 
-    # Load the tokenizer
-    with open('tokenizer.pkl', 'rb') as f:
-        tokenizer = pickle.load(f)
-
-    # Convert text to sequences
-    review_seq = tokenizer.texts_to_sequences([review_text])
-
-    # Pad sequences for equal length
-    max_sequence_length = 100
-    review_padded = pad_sequences(review_seq, maxlen=max_sequence_length)
+    # Tokenize and pad the review sequence
+    tokenizer = Tokenizer(lower=True)
+    tokenizer.fit_on_texts([review_text])
+    review_sequence = tokenizer.texts_to_sequences([review_text])
+    review_sequence = pad_sequences(review_sequence, maxlen=model.input_shape[1])
 
     # Make predictions
-    prediction = model.predict(review_padded)[0][0]
+    predictions = model.predict(review_sequence)
 
-    return float(prediction)
+    # Print the predicted output
+    if predictions[0] > 0.5:
+        print("Positive")
+    else:
+        print("Negative")
+
+    print(f'Positivity of {review_text}: {predictions[0][0]}')
+    return predictions[0][0]
 
 # Example usage
-train_sentiment_model()
-review = "This movie is bad!"
-positivity = analyze_sentiment(review)
-print('Review:', review)
-print('Positivity:', positivity)
+# train_model()
+
+# Define a new review
+new_review = "his is very bad and worst treatment experience"
+#new_review = "worst doctor they are not at all qualified they are working only for money playing with feelings of peoples peoples think that doctors are like god but they are cheating peoples and not at all giving good treatment to peoples fake doctors"
+# Analyze the sentiment of the new review
+analyze_sentiment(new_review)

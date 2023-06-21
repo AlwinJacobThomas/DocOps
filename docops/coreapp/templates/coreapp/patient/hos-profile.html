@@ -58,7 +58,11 @@
 
         <div class="card p-3">
             <div class="user">
-                <img src="{{review.appointment.patient.pic.url}}" width="30" height="30" class="user-img">
+                {% if patient.pic %}
+                <img src="{{review.appointment.patient.pic.url}}"  class="user-img" >
+                {% else %}
+                <img src="{% static 'hospital/img/avatar.jpg' %}" class="user-img" alt="dp">
+                {% endif %}
                 <span>
                     <small class="user-detail">{{review.appointment.patient.first_name}}</small>
                     <small class="review">{{review.hospital_review}}</small>

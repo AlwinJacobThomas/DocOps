@@ -2,7 +2,7 @@ from django import forms
 from user.models import Patient, Hospital, PatientProfile, HospitalProfile
 from hospital.models import Doctor
 from .models import Appointment, AppointmentReview,Medical
-
+from datetime import date
 
 class AddPatientProfileForm(forms.ModelForm):
     class Meta:
@@ -28,7 +28,9 @@ class AppointmentBookingForm(forms.ModelForm):
         widget=forms.DateInput(
             attrs={
                 'class':'form-field',
-                'type': 'date'
+                'type': 'date',
+                'min': str(date.today()),
+                'max': "2050-05-10"
             })
     )
     appointment_time = forms.CharField(
@@ -37,7 +39,9 @@ class AppointmentBookingForm(forms.ModelForm):
             attrs={
                 'class':'form-field',
                 'type': 'time',
-                'step':'1800'
+                'step':'1800',
+                'min': '09:00',
+                'max': '16:00',
             })
     )
 
